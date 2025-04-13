@@ -1,0 +1,25 @@
+Metadata-Version: 2.2
+Name: sacred_geometry
+Version: 0.1.0
+Summary: Advanced Sacred Geometry - A toolkit for creating, manipulating, and visualizing sacred geometry patterns
+Author: PMPly
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Requires-Dist: numpy>=1.20.0
+Requires-Dist: matplotlib>=3.4.0
+Requires-Dist: sympy>=1.8.0
+Requires-Dist: scipy>=1.7.0
+Requires-Dist: PyOpenGL>=3.1.0
+Requires-Dist: PyQt5>=5.15.0
+Requires-Dist: plotly>=5.0.0
+Requires-Dist: flask>=2.0.0
+Requires-Dist: pyvista>=0.32.0
+Requires-Dist: manim>=0.15.0
+Requires-Dist: pydub>=0.25.0
+Dynamic: author
+Dynamic: classifier
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary

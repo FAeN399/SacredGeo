@@ -1,0 +1,16 @@
+numpy>=1.20.0
+matplotlib>=3.4.0
+sympy>=1.8.0
+scipy>=1.7.0
+PyOpenGL>=3.1.0
+PyQt5>=5.15.0
+# For 3D visualization
+plotly>=5.0.0
+# For web interface (optional)
+flask>=2.0.0
+# For more advanced 3D rendering
+pyvista>=0.32.0
+# For animations
+manim>=0.15.0
+# For sound integration (optional)
+pydub>=0.25.0

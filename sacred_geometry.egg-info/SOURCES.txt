@@ -1,0 +1,7 @@
+setup.py
+sacred_geometry/__init__.py
+sacred_geometry.egg-info/PKG-INFO
+sacred_geometry.egg-info/SOURCES.txt
+sacred_geometry.egg-info/dependency_links.txt
+sacred_geometry.egg-info/requires.txt
+sacred_geometry.egg-info/top_level.txt
