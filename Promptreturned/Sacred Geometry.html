@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Blueprint: Esoteric Sacred Geometry GUI</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a2e; /* Dark indigo background */
+            color: #e0e0e0; /* Light text */
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #252538; /* Slightly lighter dark base */
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        header.project-header {
+            background-color: #121220; /* Even darker for header */
+            color: #daa520; /* Golden text for titles */
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #daa520;
+            margin-bottom: 20px;
+        }
+        header.project-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5em;
+        }
+        header.project-header p {
+            font-size: 1.1em;
+            color: #c0c0d0; /* Light silver-grey */
+        }
+
+        nav.toc {
+            background-color: #202030;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+            border: 1px solid #3c3c4f;
+        }
+        nav.toc h2 {
+            margin-top: 0;
+            color: #daa520;
+            font-size: 1.5em;
+            border-bottom: 1px solid #3c3c4f;
+            padding-bottom: 10px;
+        }
+        nav.toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        nav.toc ul li {
+            margin-bottom: 8px;
+        }
+        nav.toc ul li a {
+            text-decoration: none;
+            color: #e6e6fa; /* Lavender white */
+            font-weight: bold;
+        }
+        nav.toc ul li a:hover {
+            color: #ffd700; /* Brighter gold */
+            text-decoration: underline;
+        }
+        nav.toc ul ul {
+            padding-left: 20px;
+            margin-top: 5px;
+        }
+        nav.toc ul ul li a {
+            font-weight: normal;
+            color: #c0c0d0;
+        }
+
+        main.content-main {
+            padding-top: 10px;
+        }
+
+        section.phase {
+            background-color: #2c2c40; /* Slightly lighter than container for contrast */
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 6px;
+            border: 1px solid #3c3c4f;
+        }
+        h2.phase-title {
+            color: #daa520;
+            font-size: 2em;
+            border-bottom: 1px solid #daa520;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        p.phase-description {
+            color: #c0c0d0;
+            font-style: italic;
+        }
+
+        article.task {
+            background-color: #252538; /* Match container bg */
+            border: 1px solid #3c3c4f;
+            border-left: 4px solid #daa520; /* Golden left border for tasks */
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        h3.task-title {
+            color: #e6e6fa; /* Lavender white */
+            font-size: 1.6em;
+            margin-top: 0;
+        }
+        .task-details > p, .task-details > ul > li {
+             color: #c0c0d0;
+        }
+        .task-details strong { /* For labels like "Description:", "Context:" */
+            color: #daa520;
+            font-weight: bold;
+        }
+        .task-details ul {
+            padding-left: 20px;
+            list-style-type: disc;
+        }
+
+        .llm-prompt-container {
+            margin-top: 15px;
+        }
+        .llm-prompt-container strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #daa520;
+        }
+        .llm-prompt-container pre {
+            background-color: #1a1a2e; /* Deep indigo for code blocks */
+            color: #f8f8f2; /* Light text for code */
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            border: 1px solid #3c3c4f;
+            font-size: 0.95em;
+        }
+        .llm-prompt-container code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', Courier, monospace;
+        }
+        .placeholder-note {
+            color: #a0a0c0; /* Muted text */
+            font-style: italic;
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #202030;
+            border-left: 3px solid #505060;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="project-header">
+            <h1>Project Blueprint: Esoteric Sacred Geometry GUI</h1>
+            <p>This document outlines a detailed, step-by-step plan for implementing the Esoteric Sacred Geometry GUI application as defined in the Developer Specification document. The plan emphasizes iterative development, with small, testable tasks.</p>
+        </header>
+
+        <nav class="toc" id="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#phase1">Phase 1: Core Geometry Engine & Utilities (Backend Foundation)</a>
+                    <ul>
+                        <li><a href="#task1-1">Task 1: Project Setup and `sacred_geometry` Package Initialization</a></li>
+                        <li><a href="#task1-2">Task 2: Implement `create_circle` in `sacred_geometry/core/core.py`</a></li>
+                        <li><a href="#task1-3">Task 3: Implement `create_regular_polygon` in `sacred_geometry/core/core.py`</a></li>
+                        <li><a href="#task1-X">Task X: Implement `hex_to_rgb` and `rgb_to_hex` in `sacred_geometry/utils/color_schemes.py`</a></li>
+                    </ul>
+                </li>
+                <li><a href="#phase2">Phase 2: Visualization Engine (Backend)</a>
+                    <ul>
+                        <li><a href="#task2-Y">Task Y: Implement `plot_2d_pattern` (Basic Circle List)</a></li>
+                    </ul>
+                </li>
+                <li><a href="#phase3">Phase 3: Basic GUI Structure & Core Functionality Integration</a>
+                    <ul>
+                        <li><a href="#task3-Z">Task Z: Setup Basic PyQt5 Main Window</a></li>
+                        <li><a href="#task3-Z1">Task Z+1: Implement MatplotlibCanvas Class</a></li>
+                        <li><a href="#task3-Z2">Task Z+2: Integrate `MatplotlibCanvas` and Basic Controls for Flower of Life</a></li>
+                        <li><a href="#task3-Z3">Task Z+3: Implement Tab Structure and Load QSS Stylesheet</a></li>
+                    </ul>
+                </li>
+                <li><a href="#phase4">Phase 4: Advanced Features & Enhancements</a>
+                    <ul>
+                        <li><a href="#task4-AA">Task AA: Implement `animate_pattern_evolution`</a></li>
+                        <li><a href="#task4-AB">Task AB: Integrate Flower of Life Growth Animation into GUI</a></li>
+                    </ul>
+                </li>
+                <li><a href="#phase5">Phase 5: Future Enhancements (Conceptual Modules)</a>
+                    <ul>
+                        <li><a href="#task5-BB">Task BB: Implement Conceptual `map_geometry_to_audio_params`</a></li>
+                    </ul>
+                </li>
+                <li><a href="#phase6">Phase 6: Packaging, Documentation & Testing Refinement</a>
+                    <ul>
+                        <li><a href="#task6-CC">Task CC: Populate `README.md`, `requirements.txt`, `setup.py`</a></li>
+                        <li><a href="#task6-DD">Task DD: Comprehensive Testing and Refinement</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="content-main">
+            <section id="phase1" class="phase">
+                <h2 class="phase-title">Phase 1: Core Geometry Engine & Utilities (Backend Foundation)</h2>
+                <p class="phase-description">This phase focuses on creating the fundamental mathematical and utility functions that will power the geometry generation.</p>
+
+                <article id="task1-1" class="task">
+                    <h3 class="task-title">Task 1: Project Setup and `sacred_geometry` Package Initialization</h3>
+                    <div class="task-details">
+                        <p><strong>Description:</strong> Create the main project directory and the `sacred_geometry` package structure, including `__init__.py` files to make it a recognizable Python package. Also, create the `utils` sub-directory.</p>
+                        <div class="llm-prompt-container">
+                            <strong>LLM Prompt:</strong>
+                            <pre><code class="language-text">"Initialize the Python project structure for the 'Esoteric Sacred Geometry GUI'.
+
+1.  Create a root project directory (e.g., `sacred_geometry_gui_project`).
+2.  Inside the root, create the main package directory: `sacred_geometry`.
+3.  Add an empty `__init__.py` file inside `sacred_geometry` to mark it as a package.
+4.  Inside `sacred_geometry`, create the following subdirectories:
+    * `core`
+    * `shapes`
+    * `fractals`
+    * `visualization`
+    * `animations`
+    * `custom`
+    * `utils`
+    * `education`
+    * `audio`
+    * `vr`
+    * `ai`
+5.  Add an empty `__init__.py` file inside each of these subdirectories.
+6.  Create placeholder files for `README.md`, `requirements.txt`, and `setup.py` in the root directory. We will populate these later.
+7.  Create an `outputs/` directory in the root for generated files.
+
+No specific tests are needed for this structural setup, but the directory tree should match this specification."</code></pre>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="task1-2" class="task">
+                    <h3 class="task-title">Task 2: Implement `create_circle` in `sacred_geometry/core/core.py`</h3>
+                    <div class="task-details">
+                        <p><strong>Description:</strong> Implement the `create_circle` function.</p>
+                        <p><strong>Context:</strong> The `sacred_geometry/core/core.py` file is being created. This is one of the first geometric primitive functions.</p>
+                        <p><strong>Functionality:</strong></p>
+                        <ul>
+                            <li>Takes `center: Tuple[float, float]`, `radius: float`, `num_points: int = 100`.</li>
+                            <li>Returns a `numpy.ndarray` of shape `(num_points, 2)` representing points on the circle's circumference.</li>
+                            <li>Uses `numpy` for calculations.</li>
+                        </ul>
+                        <p><strong>Tests:</strong></p>
+                        <ul>
+                            <li>Write unit tests ensuring the returned array has the correct shape.</li>
+                            <li>Test that all generated points are approximately `radius` distance from the `center`.</li>
+                            <li>Test with `radius = 0` (should perhaps return the center point repeated, or handle gracefully).</li>
+                            <li>Test with a small `num_points` (e.g., 4) to check basic geometry.</li>
+                        </ul>
+                        <p><strong>Integration:</strong> This function will be a fundamental building block for many other patterns.</p>
+                        <div class="llm-prompt-container">
+                            <strong>LLM Prompt:</strong>
+                            <pre><code class="language-python">"""
+Task: Implement the `create_circle` function in `sacred_geometry/core/core.py`.
+
+Context:
+- You are creating the `sacred_geometry/core/core.py` module.
+- This function will be a basic geometric primitive.
+- Required imports: `import numpy as np`, `from typing import Tuple`.
+
+Function Signature (as per spec):
+`def create_circle(center: Tuple[float, float], radius: float, num_points: int = 100) -> np.ndarray:`
+
+Implementation Details:
+- The function should generate `num_points` evenly spaced points on the circumference of a circle.
+- Use `np.linspace` for angles from 0 to 2*pi.
+- Calculate x and y coordinates using `radius * np.cos(theta)` and `radius * np.sin(theta)`, adjusted by the `center`.
+- Return a NumPy array of shape `(num_points, 2)`.
+
+Tests to Implement (e.g., using unittest or pytest):
+1.  `test_return_shape`: Check if `create_circle((0,0), 1.0, 50).shape` is `(50, 2)`.
+2.  `test_points_on_circumference`: For a sample of points returned, verify `np.isclose(np.linalg.norm(point - center), radius)` is True.
+3.  `test_zero_radius`: Check behavior for `radius = 0`. It should return an array of `num_points` all at the `center` coordinates.
+4.  `test_specific_points_triangle`: For `num_points=3`, `radius=1`, `center=(0,0)`, check if the points roughly form an equilateral triangle (e.g. point0 at (1,0) if not rotated, or check distances between points).
+
+Provide the complete `core.py` file content including the function, necessary imports, and docstrings.
+Also, provide a separate block with the unit test code for this function.
+"""</code></pre>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="task1-3" class="task">
+                    <h3 class="task-title">Task 3: Implement `create_regular_polygon` in `sacred_geometry/core/core.py`</h3>
+                    <div class="task-details">
+                        <p><strong>Description:</strong> Implement the `create_regular_polygon` function.</p>
+                        <p><strong>Context:</strong> `sacred_geometry/core/core.py` exists and contains `create_circle`.</p>
+                        <p><strong>Functionality:</strong></p>
+                        <ul>
+                            <li>Takes `center: Tuple[float, float]`, `radius: float` (distance to vertices), `sides: int`, `rotation: float = 0` (in radians).</li>
+                            <li>Returns a `numpy.ndarray` of shape `(sides, 2)` representing the polygon's vertices.</li>
+                        </ul>
+                        <p><strong>Tests:</strong></p>
+                        <ul>
+                            <li>Correct number of vertices.</li>
+                            <li>Vertices are at `radius` distance from `center`.</li>
+                            <li>Test rotation parameter (e.g., a square rotated by pi/4).</li>
+                            <li>Test with `sides = 3` (triangle), `sides = 4` (square), `sides = 6` (hexagon).</li>
+                        </ul>
+                        <p><strong>Integration:</strong> Used for constructing more complex patterns and shapes.</p>
+                        <div class="llm-prompt-container">
+                            <strong>LLM Prompt:</strong>
+                            <pre><code class="language-python">"""
+Task: Add the `create_regular_polygon` function to `sacred_geometry/core/core.py`.
+
+Context:
+- The `sacred_geometry/core/core.py` file already contains the `create_circle` function and necessary NumPy/typing imports.
+- This function generates vertices for a regular polygon.
+
+Function Signature (as per spec):
+`def create_regular_polygon(center: Tuple[float, float], radius: float, sides: int, rotation: float = 0) -> np.ndarray:`
+
+Implementation Details:
+- Calculate angles for each vertex: `np.linspace(0, 2 * np.pi, sides, endpoint=False) + rotation`.
+- Calculate x and y coordinates similar to `create_circle`.
+- Return a NumPy array of shape `(sides, 2)`.
+
+Tests to Implement:
+1.  `test_return_shape`: Check if `create_regular_polygon((0,0), 1.0, 6).shape` is `(6, 2)`.
+2.  `test_vertices_on_circumference`: Verify all vertices are `radius` distance from `center`.
+3.  `test_triangle`: For `sides=3`, check basic properties.
+4.  `test_square_no_rotation`: For `sides=4, radius=1, rotation=0`, vertices should be at `(1,0), (0,1), (-1,0), (0,-1)` or similar depending on starting angle.
+5.  `test_square_with_rotation`: For `sides=4, radius=1, rotation=np.pi/4`, vertices should be at `(sqrt(2)/2, sqrt(2)/2)`, etc.
+
+Provide the updated `core.py` file content with the new function.
+Also, provide a separate block with the unit test code for this new function.
+"""</code></pre>
+                        </div>
+                    </div>
+                </article>
+
+                <p class="placeholder-note">(Tasks for other functions in `core.py`: `create_golden_rectangle`, `intersect_circles`, `create_seed_of_life`, `create_flower_of_life`, `create_metatrons_cube`, `create_vesica_piscis`, `get_golden_ratio`, `generate_fibonacci_sequence`, `create_fibonacci_spiral` would follow a similar structure.)</p>
+
+                <article id="task1-X" class="task">
+                    <h3 class="task-title">Task X: Implement `hex_to_rgb` and `rgb_to_hex` in `sacred_geometry/utils/color_schemes.py`</h3>
+                    <div class="task-details">
+                        <p><strong>Description:</strong> Implement basic color conversion utilities.</p>
+                        <p><strong>Context:</strong> Create the `sacred_geometry/utils/color_schemes.py` file.</p>
+                        <p><strong>Functionality:</strong></p>
+                        <ul>
+                            <li>`hex_to_rgb(hex_color: str) -> Tuple[float, float, float]` (0-1 range for RGB).</li>
+                            <li>`rgb_to_hex(rgb_color: Tuple[float, float, float]) -> str`.</li>
+                        </ul>
+                        <p><strong>Tests:</strong></p>
+                        <ul>
+                            <li>Test with common colors (black, white, red, green, blue).</li>
+                            <li>Test edge cases.</li>
+                        </ul>
+                        <p><strong>Integration:</strong> These will be used by other functions in `color_schemes.py`.</p>
+                        <div class="llm-prompt-container">
+                            <strong>LLM Prompt:</strong>
+                            <pre><code class="language-python">"""
+Task: Implement `hex_to_rgb` and `rgb_to_hex` functions in a new file `sacred_geometry/utils/color_schemes.py`.
+
+Context:
+- This is a new utility module for color operations.
+- Required imports: `from typing import Tuple`.
+
+Function Signatures (as per spec):
+`def hex_to_rgb(hex_color: str) -> Tuple[float, float, float]:`
+`def rgb_to_hex(rgb_color: Tuple[float, float, float]) -> str:`
+
+Implementation Details:
+- `hex_to_rgb`: Input like "#RRGGBB". Output RGB values should be normalized to the 0.0-1.0 range.
+- `rgb_to_hex`: Input RGB values in 0.0-1.0 range. Output like "#RRGGBB".
+
+Tests to Implement:
+1.  `test_hex_to_rgb_black`: `hex_to_rgb("#000000")` should be `(0.0, 0.0, 0.0)`.
+2.  `test_hex_to_rgb_white`: `hex_to_rgb("#FFFFFF")` should be `(1.0, 1.0, 1.0)`.
+3.  `test_hex_to_rgb_red`: `hex_to_rgb("#FF0000")` should be `(1.0, 0.0, 0.0)`.
+4.  `test_rgb_to_hex_black`: `rgb_to_hex((0.0, 0.0, 0.0))` should be `"#000000"`.
+5.  `test_rgb_to_hex_custom`: `rgb_to_hex((0.5, 0.75, 1.0))` should correctly convert.
+
+Provide the `color_schemes.py` file content with these functions.
+Also, provide a separate block with the unit test code.
+"""</code></pre>
+                        </div>
+                    </div>
+                </article>
+                <p class="placeholder-note">(Continue for other functions in `color_schemes.py`, then `exporters.py`, `shapes.py`, `fractals.py` in a similar granular fashion.)</p>
+            </section>
+
+            <section id="phase2" class="phase">
+                <h2 class="phase-title">Phase 2: Visualization Engine (Backend)</h2>
+                <p class="phase-description">This phase focuses on implementing the `visualization.py` module to draw the geometries.</p>
+
+                <article id="task2-Y" class="task">
+                    <h3 class="task-title">Task Y: Implement `plot_2d_pattern` in `sacred_geometry/visualization/visualization.py` (Basic Circle List)</h3>
+                    <div class="task-details">
+                        <p><strong>Description:</strong> Implement the initial version of `plot_2d_pattern` to handle lists of circles (e.g., from `create_flower_of_life`).</p>
+                        <p><strong>Context:</strong> `sacred_geometry/visualization/visualization.py` is being created. `core.py` functions like `create_flower_of_life` exist.</p>
+                        <p><strong>Functionality:</strong></p>
+                        <ul>
+                            <li>Takes `pattern_data: List[np.ndarray]` (list of circle point arrays), `ax: matplotlib.axes.Axes`, `title: str`, `color_scheme: str`, `show_points: bool`.</li>
+                            <li>Plots each circle on the provided `ax`.</li>
+                            <li>Applies basic coloring. (Initially, can use a single color, then add `color_scheme` logic).</li>
+                            <li>Optionally plots center points.</li>
+                        </ul>
+                        <p><strong>Tests:</strong> (More challenging for plotting; might involve checking number of artists on the axes, or visual inspection initially)</p>
+                        <ul>
+                            <li>Test that the correct number of circles are plotted.</li>
+                            <li>If `show_points` is true, check for scatter plot artists.</li>
+                        </ul>
+                        <p><strong>Integration:</strong> This will be called by the GUI to render 2D patterns.</p>
+                        <div class="llm-prompt-container">
+                            <strong>LLM Prompt:</strong>
+                            <pre><code class="language-python">"""
+Task: Implement an initial version of `plot_2d_pattern` in `sacred_geometry/visualization/visualization.py`. This version should specifically handle `pattern_data` that is a list of NumPy arrays, where each array represents the points of a circle (e.g., output from `create_flower_of_life`).
+
+Context:
+- Create the `sacred_geometry/visualization/visualization.py` module.
+- Assume functions like `create_flower_of_life` from `sacred_geometry.core.core` are available for generating test data.
+- Required imports: `import numpy as np`, `import matplotlib.pyplot as plt`, `from typing import List, Any, Tuple, Optional, Union`, `from matplotlib.figure import Figure`.
+
+Function Signature (subset for this task, can be expanded later):
+`def plot_2d_pattern(pattern_data: List[np.ndarray], ax: plt.Axes, title: str = "2D Pattern", color: str = "blue", show_points: bool = False):`
+(Note: We'll add `color_scheme` and other pattern types later. For now, use a simple `color` argument.)
+
+Implementation Details:
+- Iterate through `pattern_data` (list of circle arrays).
+- For each circle array, use `ax.plot(circle[:, 0], circle[:, 1], color=color, alpha=0.7)`.
+- If `show_points` is true, also plot the center of each circle (you might need to calculate this or assume the first point is related to the center for simplicity in this initial step, or modify `create_circle` to also return center). For simplicity now, let's assume `show_points` might plot the first point of each circle array: `ax.scatter(circle[0, 0], circle[0, 1], color=color, s=20)`.
+- Set `ax.set_aspect('equal')`.
+- Set `ax.set_title(title)`.
+- Add `ax.grid(True, linestyle='--', alpha=0.7)`.
+
+Tests to Implement (focus on plot elements):
+1.  `test_plot_circles_count`: Generate a Flower of Life with 7 circles. Call `plot_2d_pattern`. Check if `len(ax.lines)` is 7.
+2.  `test_show_points_active`: If `show_points=True`, check if `len(ax.collections)` (for scatter) is greater than 0.
+
+Provide the `visualization.py` file content with this function.
+Also, provide a separate block with the unit test code.
+"""</code></pre>
+                        </div>
+                    </div>
+                </article>
+                <p class="placeholder-note">(Continue for `plot_3d_shape` and expanding `plot_2d_pattern` to handle other data structures like dicts from `create_metatrons_cube`.)</p>
+            </section>
+
+            <section id="phase3" class="phase">
+                <h2 class="phase-title">Phase 3: Basic GUI Structure & Core Functionality Integration</h2>
+                <p class="phase-description">This phase brings the application to life with a user interface.</p>
+
+                <article id="task3-Z" class="task">
+                    <h3 class="task-title">Task Z: Setup Basic PyQt5 Main Window in `esoteric_sacred_geometry_gui.py`</h3>
+                    <div class="task-details">
+                        <p><strong>Description:</strong> Create the main application window class `SacredGeometryGUI` inheriting from `QMainWindow`.</p>
+                        <p><strong>Context:</strong> This is the main GUI script.</p>
+                        <p><strong>Functionality:</strong></p>
+                        <ul>
+                            <li>Set window title and initial geometry.</li>
+                            <li>Initialize a central widget and a basic layout.</li>
+                            <li>Include `if __name__ == "__main__":` block to run the application.</li>
+                        </ul>
+                        <p><strong>Tests:</strong> Manual visual inspection: does the window appear?</p>
+                        <p><strong>Integration:</strong> This is the entry point of the application.</p>
+                        <div class="llm-prompt-container">
+                            <strong>LLM Prompt:</strong>
+                            <pre><code class="language-python">"""
+Task: Create the basic structure for the main application window in `esoteric_sacred_geometry_gui.py`.
+
+Context:
+- This script will be the main entry point for the GUI application.
+- Required imports: `import sys`, `from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout`.
+
+Implementation Details:
+- Define a class `SacredGeometryGUI(QMainWindow)`.
+- In its `__init__`:
+    - Call `super().__init__()`.
+    - Set the window title (e.g., "Sacred Geometry Explorer").
+    - Set initial window geometry (e.g., `self.setGeometry(100, 100, 1200, 800)`).
+    - Create a `QWidget` as the central widget.
+    - Set a `QVBoxLayout` for the central widget.
+- Create a `main()` function to instantiate `QApplication` and `SacredGeometryGUI`, show the window, and start the event loop.
+- Add `if __name__ == "__main__": main()`.
+
+Tests:
+- Manual test: Run the script. A basic empty window with the specified title and size should appear.
+
+Provide the complete `esoteric_sacred_geometry_gui.py` file content.
+"""</code></pre>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="task3-Z1" class="task">
+                    <h3 class="task-title">Task Z+1: Implement MatplotlibCanvas Class in `esoteric_sacred_geometry_gui.py`</h3>
+                    <div class="task-details">
+                        <p><strong>Description:</strong> Create a custom `MatplotlibCanvas` class for embedding Matplotlib plots in PyQt5.</p>
+                        <p><strong>Context:</strong> `esoteric_sacred_geometry_gui.py` exists with the basic `QMainWindow`.</p>
+                        <p><strong>Functionality:</strong></p>
+                        <ul>
+                            <li>Inherits from `FigureCanvasQTAgg`.</li>
+                            <li>Initializes a `matplotlib.figure.Figure` and an `Axes` (or 3D Axes).</li>
+                            <li>Includes methods to clear the plot and switch between 2D/3D axes.</li>
+                            <li>Applies basic dark theme styling to the figure/axes as per spec (e.g., facecolor).</li>
+                        </ul>
+                        <p><strong>Tests:</strong> Manual: Can an instance of this canvas be added to the main window? Does it display a simple test plot?</p>
+                        <p><strong>Integration:</strong> This canvas will be the central visualization area.</p>
+                        <div class="llm-prompt-container">
+                            <strong>LLM Prompt:</strong>
+                            <pre><code class="language-python">"""
+Task: Implement the `MatplotlibCanvas` class within `esoteric_sacred_geometry_gui.py`.
+
+Context:
+- The `esoteric_sacred_geometry_gui.py` file contains the `SacredGeometryGUI` QMainWindow.
+- This class will embed Matplotlib plots.
+- Required imports: `from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas`, `from matplotlib.figure import Figure`, `from PyQt5.QtWidgets import QSizePolicy`. Also `import matplotlib.pyplot as plt` for axes creation.
+
+Class Definition:
+`class MatplotlibCanvas(FigureCanvas):`
+
+Implementation Details for `__init__(self, parent=None, width=8, height=8, dpi=100, is_3d=False)`:
+- Initialize `self.fig = Figure(figsize=(width, height), dpi=dpi)`.
+- Set `self.fig.patch.set_facecolor('#1a1a2e')` (dark background).
+- If `is_3d`:
+    - `self.axes = self.fig.add_subplot(111, projection='3d')`
+    - `self.axes.set_facecolor('#1a1a2e')`
+    - Style tick params, labels, panes for dark theme (colors: '#c0c0d0', '#3c3c4f' as per spec).
+- Else (2D):
+    - `self.axes = self.fig.add_subplot(111)`
+    - `self.axes.set_facecolor('#1a1a2e')`
+    - `self.axes.set_aspect('equal')`
+    - Style tick params, labels, spines for dark theme.
+- Call `FigureCanvas.__init__(self, self.fig)`.
+- Set size policy: `FigureCanvas.setSizePolicy(self, QSizePolicy.Expanding, QSizePolicy.Expanding)`.
+
+Helper Methods:
+- `clear_plot(self)`: Clears `self.axes` and re-applies dark theme styling. Calls `self.draw()`.
+- `set_3d_axes(self)`: Clears figure, adds a 3D subplot to `self.axes`, styles it, calls `self.draw()`.
+- `set_2d_axes(self)`: Clears figure, adds a 2D subplot to `self.axes`, styles it, calls `self.draw()`.
+
+Tests:
+- Manual test: Instantiate this canvas in `SacredGeometryGUI`, add it to the layout. Try plotting a simple line on `self.axes` and call `self.draw()` to see if it appears. Test `clear_plot`.
+
+Provide the updated `esoteric_sacred_geometry_gui.py` with the `MatplotlibCanvas` class.
+"""</code></pre>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="task3-Z2" class="task">
+                    <h3 class="task-title">Task Z+2: Integrate `MatplotlibCanvas` and Basic Controls for Flower of Life</h3>
+                    <div class="task-details">
+                        <p><strong>Description:</strong> Add the `MatplotlibCanvas` to the main window. Add basic controls (e.g., QSpinBox for layers, QDoubleSpinBox for radius) for generating and displaying the Flower of Life.</p>
+                        <p><strong>Context:</strong> `MatplotlibCanvas` class exists. `create_flower_of_life` and `plot_2d_pattern` (initial version) exist.</p>
+                        <p><strong>Functionality:</strong></p>
+                        <ul>
+                            <li>GUI has input fields for "layers" and "radius".</li>
+                            <li>A "Generate" button.</li>
+                            <li>Clicking "Generate" calls `create_flower_of_life` with GUI parameters, then calls `plot_2d_pattern` to display on the canvas.</li>
+                        </ul>
+                        <p><strong>Tests:</strong> Manual:</p>
+                        <ul>
+                            <li>Can you change layers/radius and see the Flower of Life update on the canvas?</li>
+                            <li>Does the plot clear correctly before redrawing?</li>
+                        </ul>
+                        <p><strong>Integration:</strong> First end-to-end functionality.</p>
+                        <div class="llm-prompt-container">
+                            <strong>LLM Prompt:</strong>
+                            <pre><code class="language-python">"""
+Task: Integrate `MatplotlibCanvas` into `SacredGeometryGUI` and add controls to generate and display a Flower of Life pattern.
+
+Context:
+- `esoteric_sacred_geometry_gui.py` contains `SacredGeometryGUI` and `MatplotlibCanvas`.
+- `sacred_geometry.core.core.create_flower_of_life` generates the pattern data.
+- `sacred_geometry.visualization.visualization.plot_2d_pattern` (initial version for circle lists) plots the data.
+
+Implementation Details in `SacredGeometryGUI.__init__`:
+1.  Create an instance of `MatplotlibCanvas` (e.g., `self.canvas = MatplotlibCanvas(self, is_3d=False)`).
+2.  Add it to the main layout.
+3.  Create a `QFormLayout` or `QHBoxLayout` for controls.
+4.  Add `QLabel("Layers:")` and `self.layers_spin = QSpinBox()`. Set range (e.g., 1-5).
+5.  Add `QLabel("Radius:")` and `self.radius_spin = QDoubleSpinBox()`. Set range (e.g., 0.1-5.0), step, default.
+6.  Add `self.generate_button = QPushButton("Generate Flower of Life")`.
+7.  Connect `self.generate_button.clicked` to a new method, e.g., `self.generate_current_pattern`.
+
+Implement `self.generate_current_pattern()`:
+1.  Get `layers` and `radius` from `self.layers_spin.value()` and `self.radius_spin.value()`.
+2.  Call `self.canvas.clear_plot()`.
+3.  Call `pattern_data = create_flower_of_life(center=(0,0), radius=radius, layers=layers)`. (Ensure imports are correct).
+4.  Call `plot_2d_pattern(pattern_data, self.canvas.axes, title="Flower of Life", color="cyan")`. (Ensure imports).
+5.  Call `self.canvas.draw()`.
+
+Add necessary imports at the top of `esoteric_sacred_geometry_gui.py`:
+`from sacred_geometry.core.core import create_flower_of_life`
+`from sacred_geometry.visualization.visualization import plot_2d_pattern`
+`from PyQt5.QtWidgets import QLabel, QSpinBox, QDoubleSpinBox, QPushButton, QFormLayout, QHBoxLayout` (and others if needed for layout).
+
+Tests:
+- Manual: Run the GUI.
+    - Change "Layers" and "Radius" values.
+    - Click "Generate".
+    - Verify the Flower of Life pattern updates correctly on the canvas.
+    - Check that the plot is cleared before new generation.
+
+Provide the updated `esoteric_sacred_geometry_gui.py`.
+"""</code></pre>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="task3-Z3" class="task">
+                    <h3 class="task-title">Task Z+3: Implement Tab Structure and Load QSS Stylesheet</h3>
+                    <div class="task-details">
+                        <p><strong>Description:</strong> Add the `QTabWidget` for different categories (2D, 3D, Fractals, Animations). Implement loading of `esoteric_style.qss`.</p>
+                        <p><strong>Context:</strong> Basic GUI with Flower of Life generation exists. `esoteric_style.qss` has been defined.</p>
+                        <p><strong>Functionality:</strong></p>
+                        <ul>
+                            <li>Main window now has tabs.</li>
+                            <li>The Flower of Life controls are moved to the "2D Patterns" tab.</li>
+                            <li>The application loads and applies `esoteric_style.qss` at startup.</li>
+                        </ul>
+                        <p><strong>Tests:</strong> Manual:</p>
+                        <ul>
+                            <li>Do tabs appear?</li>
+                            <li>Is the Flower of Life functionality now within the "2D Patterns" tab?</li>
+                            <li>Does the GUI reflect the dark esoteric theme from the QSS file?</li>
+                        </ul>
+                        <div class="llm-prompt-container">
+                            <strong>LLM Prompt:</strong>
+                            <pre><code class="language-python">"""
+Task: Refactor `SacredGeometryGUI` to use a `QTabWidget` for different categories and implement loading of the `esoteric_style.qss` stylesheet.
+
+Context:
+- `esoteric_sacred_geometry_gui.py` currently has controls for Flower of Life directly in the main window layout.
+- The `esoteric_style.qss` file (content previously defined) should be in the same directory as the script or an accessible path.
+
+Implementation Details in `SacredGeometryGUI.__init__`:
+1.  Create `self.tabs = QTabWidget()`.
+2.  Create `self.tab_2d = QWidget()` and `self.tab_3d = QWidget()` (and placeholders for Fractals, Animations).
+3.  Add these widgets as tabs: `self.tabs.addTab(self.tab_2d, "2D Patterns")`, etc.
+4.  Move the existing Flower of Life controls (QSpinBox, QDoubleSpinBox, QPushButton) and their layout into `self.tab_2d`.
+5.  Replace the previous central layout part with `self.tabs`. The main layout should now primarily contain the `MatplotlibCanvas` and the `QTabWidget` (perhaps in a QSplitter later, but for now, a QVBoxLayout with tabs above/beside canvas is fine).
+6.  Create a method `load_stylesheet(self)`:
+    - Tries to open and read `esoteric_style.qss`.
+    - Calls `self.setStyleSheet(style_content)`.
+    - Includes error handling (e.g., `FileNotFoundError`) and prints a message if the stylesheet can't be loaded.
+7.  Call `self.load_stylesheet()` at the end of `__init__`.
+
+Update `self.generate_current_pattern()`:
+- This method might need to become more generic later or be part of a tab-specific handler. For now, ensure it still works when triggered from the button within `self.tab_2d`.
+
+Required imports: `from PyQt5.QtWidgets import QTabWidget`. `import os` might be useful for path handling.
+
+Tests:
+- Manual:
+    - Run the GUI. Verify the dark esoteric theme is applied.
+    - Verify the "2D Patterns" tab exists and contains the Flower of Life controls.
+    - Verify Flower of Life generation still works from within the tab.
+    - Check console output for stylesheet loading messages (success or failure).
+
+Provide the updated `esoteric_sacred_geometry_gui.py`.
+"""</code></pre>
+                        </div>
+                    </div>
+                </article>
+                <p class="placeholder-note">(Continue adding controls for each 2D pattern to the 2D tab, then 3D shapes to the 3D tab, etc., integrating with their respective backend functions from `core.py`, `shapes.py`, `fractals.py` and `visualization.py`.)</p>
+            </section>
+
+            <section id="phase4" class="phase">
+                <h2 class="phase-title">Phase 4: Advanced Features & Enhancements</h2>
+                <p class="phase-description">This phase adds more sophisticated features like animations, compositions, and educational content.</p>
+
+                <article id="task4-AA" class="task">
+                    <h3 class="task-title">Task AA: Implement `animate_pattern_evolution` in `sacred_geometry/animations/animations.py`</h3>
+                    <div class="task-details">
+                        <p><strong>Description:</strong> Implement the generic animation function.</p>
+                        <p><strong>Context:</strong> `animations.py` is being created. Core geometry and visualization functions exist.</p>
+                        <p><strong>Functionality:</strong> As per the spec and previously generated code for `animations.py`.</p>
+                        <p><strong>Tests:</strong> Unit tests for `animate_pattern_evolution`:</p>
+                        <ul>
+                            <li>Mock `pattern_generator` and `plot_function`.</li>
+                            <li>Verify `update` function is called `frames` times.</li>
+                            <li>Verify animated parameter changes correctly over frames.</li>
+                            <li>Test animation saving to GIF (if `pillow` is available).</li>
+                        </ul>
+                        <div class="llm-prompt-container">
+                            <strong>LLM Prompt:</strong>
+                            <pre><code class="language-python">"""
+Task: Implement the `animate_pattern_evolution` function in a new file `sacred_geometry/animations/animations.py`.
+
+Context:
+- This module will handle animation generation.
+- It will use `matplotlib.animation.FuncAnimation`.
+- Assume core geometry functions (e.g., `create_flower_of_life`) and plotting functions (e.g., `plot_2d_pattern`) exist in their respective modules for testing.
+
+Function Signature and Details:
+- Refer to the `animations.py` content previously generated in our discussion, which includes `_setup_animation_figure` and `animate_pattern_evolution`. Ensure it handles:
+    - `pattern_generator`, `static_params`, `animated_param_name`, `param_start_value`, `param_end_value`.
+    - `plot_function` to draw each frame.
+    - `frames`, `interval`, `is_3d`, `title`.
+    - `output_filename` for saving (GIF/MP4 via 'pillow' or 'ffmpeg').
+    - Dark theme styling for the animation figure.
+    - Correct clearing and re-plotting in the `update` function.
+
+Helper Function `_setup_animation_figure`:
+- Ensure this helper (as previously defined) correctly styles the Matplotlib figure and axes for the dark esoteric theme for both 2D and 3D plots.
+
+Tests to Implement (for `animate_pattern_evolution`):
+1.  `test_animation_frame_calls`: Use mocks to verify the `plot_function` is called for each frame.
+2.  `test_animated_parameter_progression`: Check that the animated parameter passed to `pattern_generator` inside the `update` function progresses correctly from `param_start_value` to `param_end_value`.
+3.  `test_animation_save_gif` (Conditional on Pillow): If Pillow is installed, attempt to save a short dummy animation to a GIF and check if the file is created.
+4.  (Optional) `test_3d_animation_setup`: Verify 3D axes are used if `is_3d=True`.
+
+Example Usage in `if __name__ == '__main__':` (as previously defined in `animations.py`):
+- Include the example for animating Flower of Life growth by 'layers'.
+- This requires importing `create_flower_of_life` from `sacred_geometry.core.core` and `plot_2d_pattern` from `sacred_geometry.visualization.visualization`. Adjust import paths if running `animations.py` directly for testing (e.g., using `sys.path.append` or by structuring tests to handle package imports).
+
+Provide the complete `animations.py` file.
+Also, provide a separate block with the unit test code.
+"""</code></pre>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="task4-AB" class="task">
+                    <h3 class="task-title">Task AB: Integrate Flower of Life Growth Animation into GUI</h3>
+                    <div class="task-details">
+                        <p><strong>Description:</strong> Add controls to the "Animations" tab in the GUI to trigger and configure the Flower of Life growth animation.</p>
+                        <p><strong>Context:</strong> `animations.py` with `animate_pattern_evolution` exists. GUI has an "Animations" tab.</p>
+                        <p><strong>Functionality:</strong></p>
+                        <ul>
+                            <li>Controls for animation parameters (frames, FPS, max layers for FoL).</li>
+                            <li>"Generate Animation" button.</li>
+                            <li>This will *not* play in the GUI canvas directly. Instead, it will generate and save the animation to a file (e.g., GIF) and then perhaps notify the user or offer to open the file.</li>
+                        </ul>
+                        <p><strong>Tests:</strong> Manual:</p>
+                        <ul>
+                            <li>Can you configure and generate a Flower of Life growth GIF?</li>
+                            <li>Is the saved GIF correct?</li>
+                        </ul>
+                        <div class="llm-prompt-container">
+                            <strong>LLM Prompt:</strong>
+                            <pre><code class="language-python">"""
+Task: Add functionality to the "Animations" tab in `esoteric_sacred_geometry_gui.py` to generate and save a "Flower of Life Growth" animation.
+
+Context:
+- `esoteric_sacred_geometry_gui.py` has a `QTabWidget` with an "Animations" tab.
+- `sacred_geometry.animations.animations.animate_pattern_evolution` can generate and save animations.
+- `sacred_geometry.core.core.create_flower_of_life` is the pattern generator.
+- `sacred_geometry.visualization.visualization.plot_2d_pattern` is the plot function.
+
+Implementation in `SacredGeometryGUI` (setup_animations_tab method):
+1.  Add controls to the "Animations" tab layout:
+    - `QLabel("Animation Type:")`, `QComboBox` (initially just "Flower of Life Growth").
+    - `QLabel("Max Layers:")`, `QSpinBox` (e.g., `self.anim_max_layers_spin`, range 1-7).
+    - `QLabel("Base Radius:")`, `QDoubleSpinBox` (e.g., `self.anim_radius_spin`, default 1.0).
+    - `QLabel("Frames:")`, `QSpinBox` (e.g., `self.anim_frames_spin`, default 60).
+    - `QLabel("FPS:")`, `QSpinBox` (e.g., `self.anim_fps_spin`, default 15).
+    - `QPushButton("Generate & Save Animation")` connected to `self.generate_selected_animation`.
+
+Implement `self.generate_selected_animation()`:
+1.  Get parameters from the GUI controls.
+2.  Define `static_params` for `animate_pattern_evolution` (e.g., `{'center': (0,0), 'radius': anim_radius}`).
+3.  Define `animated_param_name = 'layers'`.
+4.  Define `param_start_value = 1`, `param_end_value = anim_max_layers`.
+5.  Prompt user for a save filepath using `QFileDialog.getSaveFileName` (default to "outputs/animations/flower_of_life_growth.gif").
+6.  If a filepath is provided:
+    - Call `animate_pattern_evolution` with all parameters, including:
+        `pattern_generator=create_flower_of_life`,
+        `plot_function=plot_2d_pattern_wrapper_for_animation` (see below),
+        `output_filename=filepath`,
+        `color_scheme='rainbow'` (or make it configurable).
+    - Show a `QMessageBox` on completion or error.
+7.  **Important**: `plot_2d_pattern` from `visualization.py` might need a small wrapper if its signature doesn't perfectly match what `animate_pattern_evolution`'s `plot_function` argument expects (e.g., if it returns a figure instead of just plotting on `ax`). The `plot_function` in `animate_pattern_evolution` is expected to draw on a passed `ax`.
+    Create a helper wrapper if needed:
+    `def plot_2d_pattern_wrapper_for_animation(pattern_data, ax, **kwargs):`
+    `    # Assuming plot_2d_pattern is modified or designed to take ax and plot on it`
+    `    plot_2d_pattern(pattern_data, ax=ax, title=kwargs.get('title', 'Frame'), color_scheme=kwargs.get('color_scheme', 'blue'))`
+    `    # Ensure plot_2d_pattern sets x/y limits appropriately for consistent animation frames.`
+
+Required imports:
+`from sacred_geometry.animations.animations import animate_pattern_evolution`
+`from PyQt5.QtWidgets import QFileDialog, QMessageBox` (and other UI elements).
+
+Tests:
+- Manual:
+    - Navigate to the "Animations" tab.
+    - Configure parameters for Flower of Life growth.
+    - Click "Generate & Save Animation".
+    - Select a save location.
+    - Verify a GIF is created and it shows the Flower of Life growing.
+    - Verify a confirmation message appears.
+
+Provide the updated sections of `esoteric_sacred_geometry_gui.py` (setup_animations_tab, generate_selected_animation, and any wrappers).
+"""</code></pre>
+                        </div>
+                    </div>
+                </article>
+                <p class="placeholder-note">(Continue for `custom/compositions.py` and `education/information.py` integration into the GUI.)</p>
+            </section>
+
+            <section id="phase5" class="phase">
+                <h2 class="phase-title">Phase 5: Future Enhancements (Conceptual Modules)</h2>
+                <p class="phase-description">This phase focuses on the initial, conceptual implementation of advanced modules.</p>
+
+                <article id="task5-BB" class="task">
+                    <h3 class="task-title">Task BB: Implement Conceptual `map_geometry_to_audio_params` in `sacred_geometry/audio/cymatics.py`</h3>
+                    <div class="task-details">
+                        <p><strong>Description:</strong> Implement the core conceptual mapping function.</p>
+                        <p><strong>Context:</strong> `cymatics.py` created.</p>
+                        <p><strong>Functionality:</strong> As per the spec and previously generated code for `cymatics.py`.</p>
+                        <p><strong>Tests:</strong> Unit tests:</p>
+                        <ul>
+                            <li>Given mock `geometric_properties`, does it return a list of sound event dicts?</li>
+                            <li>Do frequencies/durations change based on input properties in a predictable (even if simple) way?</li>
+                        </ul>
+                        <div class="llm-prompt-container">
+                            <strong>LLM Prompt:</strong>
+                            <pre><code class="language-python">"""
+Task: Implement the `map_geometry_to_audio_params` function and related basic audio generation/playback functions in `sacred_geometry/audio/cymatics.py`.
+
+Context:
+- This is a new module for exploring cymatics.
+- It will use `numpy`. `sounddevice` and `pydub` are optional dependencies.
+
+Functions to Implement (refer to previously generated `cymatics.py` content):
+1.  `map_geometry_to_audio_params(geometric_properties: Dict[str, Any], base_freq: float, duration_scale: float) -> List[Dict[str, Any]]`:
+    - Takes a dictionary of geometric properties (e.g., `num_vertices`, `symmetries`, `average_radius`, `golden_ratio_presence`).
+    - Returns a list of sound event dictionaries, each with `'frequency'`, `'duration'`, `'amplitude'`, `'waveform'`.
+    - The mapping logic should be creative but simple for now (e.g., frequency based on `base_freq` and `symmetries`, duration on `average_radius`).
+2.  `generate_sine_wave(frequency, duration, amplitude, sample_rate) -> np.ndarray`.
+3.  `play_sound_events(sound_events, sample_rate)`: Uses `sounddevice` if available.
+4.  `export_sound_events_to_wav(sound_events, filepath, sample_rate)`: Uses `pydub` if available.
+5.  Include the `SOUNDDEVICE_AVAILABLE` and `PYDUB_AVAILABLE` checks.
+
+Tests to Implement (for `map_geometry_to_audio_params`):
+1.  `test_output_structure`: Ensure it returns a list of dicts with the correct keys.
+2.  `test_parameter_influence`:
+    - Create two different `geometric_properties` dicts.
+    - Verify that the output sound events differ in a way that reflects the input property differences (e.g., more vertices lead to more sound events or different frequencies).
+3.  `test_golden_ratio_effect`: If `golden_ratio_presence` is true, check if frequencies are modulated as intended.
+
+Example Usage in `if __name__ == '__main__':` (as previously defined):
+- Demonstrate calling `map_geometry_to_audio_params` with sample properties.
+- Attempt to play and export the generated sound events.
+
+Provide the complete `cymatics.py` file.
+Also, provide a separate block with the unit test code for `map_geometry_to_audio_params`.
+"""</code></pre>
+                        </div>
+                    </div>
+                </article>
+                <p class="placeholder-note">(Similarly for conceptual starts to `vr/vr_interface.py` and `ai/pattern_generator.py`.)</p>
+            </section>
+
+            <section id="phase6" class="phase">
+                <h2 class="phase-title">Phase 6: Packaging, Documentation & Testing Refinement</h2>
+                <p class="phase-description">This phase focuses on finalizing the application for potential distribution and use.</p>
+
+                <article id="task6-CC" class="task">
+                    <h3 class="task-title">Task CC: Populate `README.md`, `requirements.txt`, `setup.py`</h3>
+                    <div class="task-details">
+                        <p><strong>Description:</strong> Fill in the project's metadata and dependency files.</p>
+                        <p><strong>Context:</strong> Most code is implemented.</p>
+                        <p><strong>Functionality:</strong></p>
+                        <ul>
+                            <li>`README.md`: Overview, features, installation, usage.</li>
+                            <li>`requirements.txt`: List all Python dependencies with versions (PyQt5, Matplotlib, NumPy, sounddevice, pydub).</li>
+                            <li>`setup.py`: Basic script for packaging using `setuptools`.</li>
+                        </ul>
+                        <p><strong>Tests:</strong></p>
+                        <ul>
+                            <li>Can `pip install -r requirements.txt` install dependencies?</li>
+                            <li>Does `python setup.py sdist bdist_wheel` (conceptually) run without errors?</li>
+                        </ul>
+                        <div class="llm-prompt-container">
+                            <strong>LLM Prompt:</strong>
+                            <pre><code class="language-python">"""
+Task: Populate the `README.md`, `requirements.txt`, and `setup.py` files for the Esoteric Sacred Geometry GUI project.
+
+Context:
+- The project's Python modules and GUI are largely complete.
+- These files are for project documentation, dependency management, and packaging.
+
+1.  `README.md`:
+    -   **Title:** Esoteric Sacred Geometry GUI
+    -   **Overview:** Briefly describe the application's purpose (generate, visualize, explore sacred geometry with an esoteric theme).
+    -   **Features:** List key features (2D patterns, 3D shapes, fractals, animations, customization, export, educational content, esoteric theme). Mention planned future enhancements (cymatics, VR, AI).
+    -   **Core Technologies:** Python, PyQt5, Matplotlib, NumPy.
+    -   **Installation:**
+        -   Clone repository (placeholder).
+        -   Create a virtual environment.
+        -   `pip install -r requirements.txt`
+    -   **Usage:** `python esoteric_sacred_geometry_gui.py`
+    -   **Modules:** Briefly list the main modules in `sacred_geometry` and their purpose.
+    -   **License:** (e.g., MIT License - placeholder)
+
+2.  `requirements.txt`:
+    -   List core dependencies. Based on the spec, these should include:
+        ```
+        numpy>=1.20
+        matplotlib>=3.4
+        PyQt5>=5.15
+        # Optional, for audio features in cymatics.py
+        # sounddevice>=0.4
+        # pydub>=0.25
+        ```
+        (Use appropriate version specifiers. These are examples.)
+
+3.  `setup.py`:
+    -   Use `setuptools`.
+    -   Include `name="sacred_geometry_gui"`, `version="1.0.0"`.
+    -   `author`, `author_email` (placeholders).
+    -   `description`.
+    -   `long_description=open('README.md').read()`, `long_description_content_type="text/markdown"`.
+    -   `packages=find_packages()` (or explicitly list `['sacred_geometry', 'sacred_geometry.core', ...]`).
+    -   `install_requires` (read from `requirements.txt` or list directly).
+    -   `entry_points={'gui_scripts': ['sacredgeometrygui = esoteric_sacred_geometry_gui:main']}` (optional, for command-line launching after install).
+    -   `python_requires=">=3.7"` (or as appropriate).
+    -   Classifiers.
+
+Provide the content for each of these three files.
+"""</code></pre>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="task6-DD" class="task">
+                    <h3 class="task-title">Task DD: Comprehensive Testing and Refinement</h3>
+                    <div class="task-details">
+                        <p><strong>Description:</strong> Conduct thorough manual testing of all features. Review and expand unit and integration tests.</p>
+                        <p><strong>Context:</strong> Application is feature-complete according to core requirements.</p>
+                        <p><strong>Functionality:</strong> Ensure all parts of the spec are met and the application is stable.</p>
+                        <p><strong>Tests:</strong> Execute all existing tests. Manually test all user flows. Add new tests for any gaps found.</p>
+                        <div class="llm-prompt-container">
+                            <strong>LLM Prompt:</strong>
+                            <pre><code class="language-text">"Task: This is a planning step. Outline a checklist for comprehensive testing and refinement of the Esoteric Sacred Geometry GUI.
+
+Context:
+- All core features as per the developer specification (up to Phase 4 functionality) are assumed to be implemented.
+- Unit and integration tests for individual modules exist.
+
+Checklist Items:
+
+1.  **Unit Test Review & Expansion:**
+    -   Go through each module (`core`, `shapes`, `fractals`, `visualization`, `animations`, `custom`, `utils`, `education`).
+    -   Ensure high test coverage for all public functions.
+    -   Verify tests for edge cases and error handling are robust.
+    -   Run all unit tests and confirm they pass.
+
+2.  **Integration Test Review & Expansion:**
+    -   Verify tests for key cross-module interactions (e.g., generate -> visualize -> export).
+    -   Add tests for new compositions or animation types if they were added.
+    -   Run all integration tests and confirm they pass.
+
+3.  **GUI Manual Testing (Systematic):**
+    -   **2D Patterns Tab:** Test every pattern, all its parameters, visualization, and export to PNG/SVG.
+    -   **3D Shapes Tab:** Test every shape, all parameters, 3D navigation (zoom, pan, rotate, auto-rotate), material/lighting effects (if implemented beyond basic), and export to OBJ/STL.
+    -   **Fractals Tab:** Test every fractal, all parameters, visualization, export.
+    -   **Animations Tab:** Test generation and saving of all implemented animation types. Verify output files.
+    -   **Custom Compositions Tab (if implemented):** Test composition creation and visualization.
+    -   **Educational Content:** Verify information display for various patterns is correct and accessible.
+    -   **General UI:**
+        -   Test all buttons, sliders, spin boxes, combo boxes, checkboxes.
+        -   Verify QSS theme is applied correctly and consistently.
+        -   Test window resizing, splitter behavior.
+        -   Test status bar messages.
+        -   Test all dialogs (Save, Export, QMessageBox for errors/info).
+    -   **Error Handling:** Intentionally provide invalid inputs or create error conditions (e.g., try to save to a read-only location) to test error messages and application stability.
+    -   **Performance:** Test with complex patterns/shapes/animations to check for acceptable responsiveness.
+
+4.  **Cross-Platform Spot Checks (if feasible):**
+    -   If possible, run the application on Windows, macOS, and Linux to identify any major platform-specific issues.
+
+5.  **Code Review & Refactoring:**
+    -   Review code for clarity, consistency, comments, and adherence to Python best practices.
+    -   Identify any "TODO" items or areas for refactoring.
+
+6.  **Documentation Update:**
+    -   Ensure `README.md` is up-to-date with final features and usage.
+    -   (If `documentation/` directory is planned) Draft initial content for user guide and API reference stubs.
+
+This prompt is for creating the *checklist itself*, not for performing the tests. The output should be the Markdown checklist."</code></pre>
+                        </div>
+                    </div>
+                </article>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

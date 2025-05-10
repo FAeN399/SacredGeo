@@ -1,0 +1,403 @@
+"""
+Sacred Geometry Animations Module
+
+This module provides functions to generate, render, and export
+animations of sacred geometry patterns and shapes.
+It leverages matplotlib for animation creation.
+"""
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+from typing import Callable, Dict, Any, List, Tuple, Optional
+
+# Import core and shape generation functions if needed for specific animations
+# from ..core.core import create_flower_of_life, create_metatrons_cube, create_fibonacci_spiral
+# from ..shapes.shapes import create_merkaba, create_torus
+# from ..visualization.visualization import plot_2d_pattern, plot_3d_shape, _set_axes_equal
+
+# Helper function to set up a consistent animation figure style
+def _setup_animation_figure(title: str = "Sacred Geometry Animation", is_3d: bool = False,
+                            bg_color: str = '#1a1a2e', axis_color: str = '#c0c0d0',
+                            title_color: str = '#daa520', grid_color: str = '#3c3c4f') -> Tuple[plt.Figure, plt.Axes]:
+    """
+    Sets up a matplotlib figure and axes with a dark esoteric theme for animations.
+
+    Args:
+        title (str): The title of the animation.
+        is_3d (bool): True if the animation is 3D, False otherwise.
+        bg_color (str): Background color of the figure and axes.
+        axis_color (str): Color for axis ticks and labels.
+        title_color (str): Color for the plot title.
+        grid_color (str): Color for the grid lines.
+
+    Returns:
+        Tuple[plt.Figure, plt.Axes]: The matplotlib figure and axes objects.
+    """
+    fig = plt.figure(figsize=(8, 8), dpi=100)
+    fig.patch.set_facecolor(bg_color)
+
+    if is_3d:
+        ax = fig.add_subplot(111, projection='3d')
+        ax.set_facecolor(bg_color)
+        ax.tick_params(axis='x', colors=axis_color)
+        ax.tick_params(axis='y', colors=axis_color)
+        ax.tick_params(axis='z', colors=axis_color)
+        ax.xaxis.label.set_color(axis_color)
+        ax.yaxis.label.set_color(axis_color)
+        ax.zaxis.label.set_color(axis_color)
+        # Set pane colors for 3D plot
+        ax.xaxis.pane.fill = True
+        ax.yaxis.pane.fill = True
+        ax.zaxis.pane.fill = True
+        ax.xaxis.pane.set_edgecolor(grid_color) # Use grid_color for pane edges
+        ax.yaxis.pane.set_edgecolor(grid_color)
+        ax.zaxis.pane.set_edgecolor(grid_color)
+        ax.xaxis.pane.set_facecolor(bg_color) # Match background for panes
+        ax.yaxis.pane.set_facecolor(bg_color)
+        ax.zaxis.pane.set_facecolor(bg_color)
+        ax.grid(True, linestyle='--', alpha=0.5, color=grid_color)
+    else:
+        ax = fig.add_subplot(111)
+        ax.set_facecolor(bg_color)
+        ax.set_aspect('equal')
+        ax.tick_params(axis='x', colors=axis_color)
+        ax.tick_params(axis='y', colors=axis_color)
+        for spine in ax.spines.values():
+            spine.set_color(grid_color) # Use grid_color for spines
+        ax.xaxis.label.set_color(axis_color)
+        ax.yaxis.label.set_color(axis_color)
+        ax.grid(True, linestyle='--', alpha=0.5, color=grid_color)
+
+    ax.set_title(title, color=title_color, fontsize=14, fontweight='bold')
+    return fig, ax
+
+def animate_pattern_evolution(
+        pattern_generator: Callable[..., Any],
+        static_params: Dict[str, Any],
+        animated_param_name: str,
+        param_start_value: float,
+        param_end_value: float,
+        plot_function: Callable[..., None],
+        frames: int = 100,
+        interval: int = 50,
+        is_3d: bool = False,
+        title: str = "Evolving Pattern",
+        output_filename: Optional[str] = None,
+        fps: int = 15,
+        bg_color: str = '#1a1a2e',
+        default_plot_color: str = '#e6e6fa',
+        **plot_kwargs) -> animation.FuncAnimation:
+    """
+    Generic function to animate the evolution of a 2D or 3D pattern
+    by changing one of its parameters over time.
+
+    Args:
+        pattern_generator (Callable): Function that generates the pattern data
+                                      (e.g., create_flower_of_life).
+        static_params (Dict): Dictionary of parameters for the pattern_generator
+                              that remain constant throughout the animation.
+        animated_param_name (str): The name of the parameter to be animated.
+        param_start_value (float): The starting value of the animated parameter.
+        param_end_value (float): The ending value of the animated parameter.
+        plot_function (Callable): Function to plot the generated pattern
+                                  (e.g., plot_2d_pattern or a custom plotter).
+        frames (int): Number of frames in the animation.
+        interval (int): Delay between frames in milliseconds.
+        is_3d (bool): True if the animation is 3D.
+        title (str): Title of the animation.
+        output_filename (Optional[str]): If provided, saves the animation to this file (e.g., "animation.gif").
+        fps (int): Frames per second for the output file.
+        bg_color (str): Background color for the animation.
+        default_plot_color (str): Default color for plotting elements if not specified in plot_kwargs.
+        **plot_kwargs: Additional keyword arguments for the plot_function.
+
+    Returns:
+        matplotlib.animation.FuncAnimation: The animation object.
+    """
+    fig, ax = _setup_animation_figure(title=title, is_3d=is_3d, bg_color=bg_color)
+
+    param_values = np.linspace(param_start_value, param_end_value, frames)
+
+    # Ensure default color is set if not overridden
+    if 'color' not in plot_kwargs and 'color_scheme' not in plot_kwargs:
+        if is_3d:
+            plot_kwargs['facecolors'] = default_plot_color # For Poly3DCollection
+        else:
+            plot_kwargs['color'] = default_plot_color
+
+
+    def update(frame_num: int) -> tuple:
+        ax.clear() # Clear previous frame
+
+        # Re-apply styles after clearing
+        ax.set_facecolor(bg_color)
+        if is_3d:
+            ax.tick_params(axis='x', colors='#c0c0d0')
+            ax.tick_params(axis='y', colors='#c0c0d0')
+            ax.tick_params(axis='z', colors='#c0c0d0')
+            ax.xaxis.pane.set_facecolor(bg_color)
+            ax.yaxis.pane.set_facecolor(bg_color)
+            ax.zaxis.pane.set_facecolor(bg_color)
+            ax.xaxis.pane.set_edgecolor('#3c3c4f')
+            ax.yaxis.pane.set_edgecolor('#3c3c4f')
+            ax.zaxis.pane.set_edgecolor('#3c3c4f')
+            ax.grid(True, linestyle='--', alpha=0.5, color='#3c3c4f')
+        else:
+            ax.tick_params(axis='x', colors='#c0c0d0')
+            ax.tick_params(axis='y', colors='#c0c0d0')
+            for spine in ax.spines.values():
+                spine.set_color('#3c3c4f')
+            ax.set_aspect('equal')
+            ax.grid(True, linestyle='--', alpha=0.5, color='#3c3c4f')
+        ax.set_title(title, color='#daa520', fontsize=14, fontweight='bold')
+
+
+        current_param_value = param_values[frame_num]
+        current_params = static_params.copy()
+        current_params[animated_param_name] = current_param_value
+
+        pattern_data = pattern_generator(**current_params)
+
+        # Call the provided plot function
+        # The plot_function should handle drawing on the `ax`
+        if is_3d:
+            # Specific handling for 3D plots to ensure they are correctly updated
+            # This might involve passing `ax` to plot_function or specific 3D plot updates
+            # For example, if plot_function is a wrapper around `ax.plot_surface` or `ax.add_collection3d`
+            plot_function(pattern_data, ax=ax, **plot_kwargs)
+            # from ..visualization.visualization import _set_axes_equal # Local import to avoid circular dependency if used directly
+            # _set_axes_equal(ax) # Ensure consistent scaling for 3D plots
+            # Example: if pattern_data has 'vertices' and 'faces'
+            if isinstance(pattern_data, dict) and 'vertices' in pattern_data and 'faces' in pattern_data:
+                ax.set_xlim([np.min(pattern_data['vertices'][:,0]) - 0.5, np.max(pattern_data['vertices'][:,0]) + 0.5])
+                ax.set_ylim([np.min(pattern_data['vertices'][:,1]) - 0.5, np.max(pattern_data['vertices'][:,1]) + 0.5])
+                ax.set_zlim([np.min(pattern_data['vertices'][:,2]) - 0.5, np.max(pattern_data['vertices'][:,2]) + 0.5])
+                ax.set_box_aspect([1,1,1]) # For equal aspect ratio in 3D
+        else:
+            plot_function(pattern_data, ax=ax, **plot_kwargs)
+            # Auto-scaling for 2D, or set limits based on pattern_data if needed
+            if isinstance(pattern_data, list) and len(pattern_data) > 0 and isinstance(pattern_data[0], np.ndarray): # e.g. flower of life
+                all_points = np.concatenate(pattern_data)
+                ax.set_xlim(np.min(all_points[:,0]) - 0.5, np.max(all_points[:,0]) + 0.5)
+                ax.set_ylim(np.min(all_points[:,1]) - 0.5, np.max(all_points[:,1]) + 0.5)
+            elif isinstance(pattern_data, dict) and 'vertices' in pattern_data: # e.g. metatron's cube
+                 vertices = np.array(pattern_data['vertices'])
+                 ax.set_xlim(np.min(vertices[:,0]) - 0.5, np.max(vertices[:,0]) + 0.5)
+                 ax.set_ylim(np.min(vertices[:,1]) - 0.5, np.max(vertices[:,1]) + 0.5)
+
+
+        return ax.artists + ax.lines + ax.collections + ax.patches # Return all artists drawn
+
+    ani = animation.FuncAnimation(fig, update, frames=frames, interval=interval, blit=False)
+
+    if output_filename:
+        try:
+            # Ensure the writer is available, common ones are 'pillow' for GIF, 'ffmpeg' for MP4
+            writer_name = 'pillow' if output_filename.endswith('.gif') else 'ffmpeg'
+            ani.save(output_filename, writer=writer_name, fps=fps)
+            print(f"Animation saved to {output_filename}")
+        except Exception as e:
+            print(f"Error saving animation: {e}. Make sure you have the '{writer_name}' writer installed.")
+            print("For MP4, you might need to install ffmpeg.")
+            print("For GIF, try: pip install pillow")
+
+
+    # To display in environments like Jupyter notebooks, you might need:
+    # from IPython.display import HTML
+    # HTML(ani.to_jshtml())
+    # or
+    # plt.show() if not saving to file and in a script
+    if not output_filename:
+        plt.show()
+
+    return ani
+
+def animate_3d_rotation(
+        shape_generator: Callable[..., Dict[str, Any]],
+        static_params: Dict[str, Any],
+        plot_function: Callable[..., None], # e.g., visualization.plot_3d_shape
+        frames: int = 180,
+        interval: int = 50,
+        rotation_axis: Tuple[float, float, float] = (0, 1, 0), # Default: Y-axis rotation
+        title: str = "Rotating 3D Shape",
+        output_filename: Optional[str] = None,
+        fps: int = 15,
+        bg_color: str = '#1a1a2e',
+        **plot_kwargs
+    ) -> animation.FuncAnimation:
+    """
+    Animates a 3D shape by rotating it around a specified axis or its view.
+
+    Args:
+        shape_generator (Callable): Function that generates the 3D shape data (e.g., create_merkaba).
+        static_params (Dict): Constant parameters for the shape_generator.
+        plot_function (Callable): Function to plot the 3D shape.
+        frames (int): Number of frames for a full 360-degree rotation.
+        interval (int): Delay between frames in milliseconds.
+        rotation_axis (Tuple[float, float, float]): Axis of rotation (currently view rotation is implemented).
+                                                    Actual object rotation would require transforming vertices.
+        title (str): Title of the animation.
+        output_filename (Optional[str]): Filename to save the animation.
+        fps (int): Frames per second for the output file.
+        bg_color (str): Background color.
+        **plot_kwargs: Additional keyword arguments for the plot_function.
+
+    Returns:
+        matplotlib.animation.FuncAnimation: The animation object.
+    """
+    fig, ax = _setup_animation_figure(title=title, is_3d=True, bg_color=bg_color)
+
+    # Generate the shape once, as only the view will change (or vertices if object rotation)
+    shape_data = shape_generator(**static_params)
+
+    # Initial plot of the shape
+    plot_function(shape_data, ax=ax, **plot_kwargs)
+    # from ..visualization.visualization import _set_axes_equal # Local import
+    # _set_axes_equal(ax) # Set initial equal aspect ratio
+
+    # Store initial limits to maintain them if desired, or recalculate if shape changes
+    initial_xlim = ax.get_xlim()
+    initial_ylim = ax.get_ylim()
+    initial_zlim = ax.get_zlim()
+
+
+    def update(frame_num: int) -> tuple:
+        # Clear only the artists, not the entire axes, to preserve view settings if possible
+        # However, for 3D, clearing and replotting is often more robust.
+        ax.clear()
+        ax.set_facecolor(bg_color)
+        ax.tick_params(axis='x', colors='#c0c0d0')
+        ax.tick_params(axis='y', colors='#c0c0d0')
+        ax.tick_params(axis='z', colors='#c0c0d0')
+        ax.xaxis.pane.set_facecolor(bg_color)
+        ax.yaxis.pane.set_facecolor(bg_color)
+        ax.zaxis.pane.set_facecolor(bg_color)
+        ax.xaxis.pane.set_edgecolor('#3c3c4f')
+        ax.yaxis.pane.set_edgecolor('#3c3c4f')
+        ax.zaxis.pane.set_edgecolor('#3c3c4f')
+        ax.grid(True, linestyle='--', alpha=0.5, color='#3c3c4f')
+        ax.set_title(title, color='#daa520', fontsize=14, fontweight='bold')
+
+
+        # Re-plot the shape (necessary because we cleared the axes)
+        # If we were transforming vertices, we would update shape_data here
+        plot_function(shape_data, ax=ax, **plot_kwargs)
+
+        # Calculate rotation angle for view
+        # Azimuthal angle for view_init rotates around Z-axis by default in 'elev, azim'
+        # For Y-axis like rotation, we might need to adjust elev and azim carefully.
+        # A simple approach is to rotate the azimuth.
+        azim_angle = (frame_num / frames) * 360
+        ax.view_init(elev=ax.elev, azim=azim_angle) # Keep current elevation, rotate azimuth
+
+        # Maintain axis limits if they were set
+        ax.set_xlim(initial_xlim)
+        ax.set_ylim(initial_ylim)
+        ax.set_zlim(initial_zlim)
+        ax.set_box_aspect([1,1,1]) # Ensure equal aspect ratio is reapplied
+
+        return ax.artists + ax.lines + ax.collections + ax.patches
+
+    ani = animation.FuncAnimation(fig, update, frames=frames, interval=interval, blit=False)
+
+    if output_filename:
+        try:
+            writer_name = 'pillow' if output_filename.endswith('.gif') else 'ffmpeg'
+            ani.save(output_filename, writer=writer_name, fps=fps)
+            print(f"Animation saved to {output_filename}")
+        except Exception as e:
+            print(f"Error saving animation: {e}. Ensure '{writer_name}' is installed.")
+    else:
+        plt.show()
+
+    return ani
+
+
+if __name__ == '__main__':
+    # Example Usage:
+    # Ensure you have the necessary functions in your project structure,
+    # or replace with placeholder/simple functions for testing.
+
+    # --- Example 1: Animating Flower of Life Growth ---
+    try:
+        from sacred_geometry.core.core import create_flower_of_life
+        from sacred_geometry.visualization.visualization import plot_2d_pattern
+
+        print("Generating Flower of Life growth animation example...")
+        animate_pattern_evolution(
+            pattern_generator=create_flower_of_life,
+            static_params={'center': (0, 0), 'radius': 1.0},
+            animated_param_name='layers',
+            param_start_value=1,
+            param_end_value=4, # Animate up to 4 layers
+            plot_function=plot_2d_pattern, # Your 2D plotting function
+            frames=60, # Number of frames
+            interval=100, # Milliseconds per frame
+            is_3d=False,
+            title="Flower of Life - Growth",
+            output_filename="outputs/animations/flower_of_life_growth.gif",
+            color_scheme='rainbow', # from plot_2d_pattern
+            show_points=False
+        )
+    except ImportError:
+        print("Skipping Flower of Life animation example: Core or Visualization module not found.")
+    except Exception as e:
+        print(f"Error in Flower of Life animation example: {e}")
+
+
+    # --- Example 2: Animating Merkaba Rotation ---
+    try:
+        from sacred_geometry.shapes.shapes import create_merkaba
+        from sacred_geometry.visualization.visualization import plot_3d_shape
+
+        print("\nGenerating Merkaba rotation animation example...")
+        animate_3d_rotation(
+            shape_generator=create_merkaba,
+            static_params={'center': (0, 0, 0), 'radius': 1.0, 'rotation': np.pi / 4},
+            plot_function=plot_3d_shape, # Your 3D plotting function
+            frames=120, # 120 frames for a smoother rotation
+            interval=50,
+            title="Rotating Merkaba",
+            output_filename="outputs/animations/merkaba_rotation.gif",
+            color_scheme='golden', # from plot_3d_shape
+            alpha=0.7,
+            show_edges=True
+        )
+    except ImportError:
+        print("Skipping Merkaba animation example: Shapes or Visualization module not found.")
+    except Exception as e:
+        print(f"Error in Merkaba animation example: {e}")
+
+    # --- Example 3: Animating Torus Minor Radius ---
+    try:
+        from sacred_geometry.shapes.shapes import create_torus
+        from sacred_geometry.visualization.visualization import plot_3d_shape
+
+        print("\nGenerating Torus minor radius animation example...")
+        animate_pattern_evolution(
+            pattern_generator=create_torus,
+            static_params={
+                'center': (0, 0, 0),
+                'major_radius': 2.0,
+                'num_major_segments': 36,
+                'num_minor_segments': 18
+            },
+            animated_param_name='minor_radius',
+            param_start_value=0.2,
+            param_end_value=1.0,
+            plot_function=plot_3d_shape,
+            frames=80,
+            interval=80,
+            is_3d=True,
+            title="Torus - Evolving Minor Radius",
+            output_filename="outputs/animations/torus_evolution.gif",
+            color_scheme='viridis', # Matplotlib default if not specified in plot_3d_shape
+            alpha=0.6
+        )
+    except ImportError:
+        print("Skipping Torus animation example: Shapes or Visualization module not found.")
+    except Exception as e:
+        print(f"Error in Torus animation example: {e}")
+
+    print("\nAnimation examples finished. Check the 'outputs/animations' folder.")
+

@@ -1,0 +1,335 @@
+# Developer Specification: Esoteric Sacred Geometry GUI
+
+**Version:** 1.0
+**Date:** 2024-05-10
+
+## 1. Introduction
+
+The Esoteric Sacred Geometry GUI is a comprehensive desktop application designed for the generation, visualization, exploration, and understanding of sacred geometry patterns and shapes. It aims to provide users with a powerful toolkit for creative expression and learning, all presented within an aesthetically rich, dark esoteric theme. The application will support 2D patterns, 3D shapes, fractals, animations, custom compositions, and offer educational insights into the symbolism and history of these geometric forms. Future enhancements include cymatics (sound generation from geometry), VR/AR exploration, and AI-assisted pattern generation.
+
+## 2. Requirements
+
+### 2.1. Functional Requirements
+
+* **FR1: 2D Pattern Generation:**
+    * FR1.1: Generate Flower of Life.
+    * FR1.2: Generate Seed of Life.
+    * FR1.3: Generate Metatron's Cube.
+    * FR1.4: Generate Vesica Piscis.
+    * FR1.5: Generate Fibonacci Spiral.
+    * FR1.6: Generate Regular Polygons (n-gons).
+    * FR1.7: Generate Golden Rectangle.
+* **FR2: 3D Shape Generation:**
+    * FR2.1: Generate Tetrahedron.
+    * FR2.2: Generate Cube (Hexahedron).
+    * FR2.3: Generate Octahedron.
+    * FR2.4: Generate Dodecahedron.
+    * FR2.5: Generate Icosahedron.
+    * FR2.6: Generate Merkaba (Star Tetrahedron).
+    * FR2.7: Generate Torus.
+    * FR2.8: Generate Cuboctahedron (Vector Equilibrium).
+    * FR2.9: Generate 3D Flower of Life (spherical packing).
+* **FR3: Fractal Generation:**
+    * FR3.1: Generate Sierpinski Triangle.
+    * FR3.2: Generate Koch Snowflake.
+    * FR3.3: Generate Sacred Spiral (Golden Spiral).
+    * FR3.4: Generate Fractal Tree.
+    * FR3.5: Generate Dragon Curve.
+    * FR3.6: Generate Hilbert Curve.
+* **FR4: Parameter Customization:** Users must be able to customize relevant parameters for all generated items (e.g., radius, layers, side count, rotation, depth, colors, line thickness, material properties for 3D).
+* **FR5: Visualization:**
+    * FR5.1: Display 2D patterns on a 2D canvas.
+    * FR5.2: Display 3D shapes on a 3D canvas with navigation (zoom, pan, rotate).
+* **FR6: Animation:**
+    * FR6.1: Animate the growth or evolution of selected patterns (e.g., Flower of Life layers, Torus minor radius).
+    * FR6.2: Animate the rotation of 3D shapes.
+    * FR6.3: Allow saving animations (e.g., GIF, MP4 - if feasible with Matplotlib animation writers).
+* **FR7: Custom Compositions:** Allow users to create and visualize compositions by layering or arranging multiple patterns/shapes.
+* **FR8: Export Functionality:**
+    * FR8.1: Export 2D visualizations as image files (PNG, SVG).
+    * FR8.2: Export 3D models in common formats (OBJ, STL).
+* **FR9: Educational Content:** Provide access to information (description, history, symbolism) for each sacred geometry pattern and shape.
+* **FR10: User Interface:**
+    * FR10.1: Implement a dark esoteric theme as specified in `esoteric_style.qss`.
+    * FR10.2: Provide an intuitive tab-based navigation for different categories (2D, 3D, Fractals, etc.).
+* **FR11: Cymatics (Future Enhancement):**
+    * FR11.1: Generate audio representations based on the geometric properties of patterns.
+    * FR11.2: Allow playback of generated audio.
+    * FR11.3: Allow export of audio (e.g., WAV).
+* **FR12: VR/AR Exploration (Future Enhancement):** Provide a conceptual interface for future integration with VR/AR systems to explore generated geometry.
+* **FR13: AI-Assisted Generation (Future Enhancement):** Implement AI techniques (e.g., evolutionary algorithms) to assist in generating novel or optimized patterns.
+
+### 2.2. Non-Functional Requirements
+
+* **NFR1: Usability:** The application must be intuitive and easy to use, with clear controls and informative feedback. The esoteric theme should enhance, not hinder, usability.
+* **NFR2: Performance:** Geometric generation and visualization should be responsive. 3D rendering must be smooth enough for comfortable interaction. Complex animations should render within acceptable timeframes.
+* **NFR3: Extensibility:** The software architecture must be modular to facilitate the addition of new geometric patterns, shapes, features, educational content, and advanced modules (AI, VR, Audio).
+* **NFR4: Portability:** As a Python application, it should aim for compatibility across major desktop operating systems (Windows, macOS, Linux), dependent on the portability of its core libraries (PyQt5, Matplotlib).
+* **NFR5: Correctness:** All geometric calculations must be accurate, and patterns/shapes should be rendered faithfully according to their mathematical definitions.
+* **NFR6: Reliability:** The application should be stable and handle errors gracefully without crashing.
+* **NFR7: Maintainability:** Code should be well-documented, organized, and follow good coding practices.
+
+## 3. Architecture
+
+### 3.1. Overview
+
+The Esoteric Sacred Geometry GUI will be a desktop application built using Python. It will feature a modular architecture separating core geometric logic, visualization, GUI, and other functionalities.
+
+### 3.2. Core Libraries & Technologies
+
+* **Python 3.x:** Primary programming language.
+* **PyQt5:** For the graphical user interface (GUI).
+* **Matplotlib:** For 2D and 3D plotting, and animation rendering, integrated into the PyQt5 GUI.
+* **NumPy:** For numerical computations, array manipulations, and geometric calculations.
+* **Optional Libraries:** `sounddevice` (for audio playback), `pydub` (for audio processing/export). Libraries for VR/AI will be determined upon implementation of those features.
+
+### 3.3. Modular Structure
+
+The application will be organized into a main package `sacred_geometry` and a GUI application script.
+
+* **`sacred_geometry/` (Main Library Package):**
+    * `core/core.py`: Contains fundamental 2D pattern generation functions (e.g., `create_flower_of_life`, `create_circle`) and core mathematical utilities (e.g., Golden Ratio).
+    * `shapes/shapes.py`: Contains functions for generating 3D shapes (e.g., `create_tetrahedron`, `create_merkaba`).
+    * `fractals/fractals.py`: Contains functions for generating various fractal patterns (e.g., `sierpinski_triangle`, `koch_snowflake`).
+    * `visualization/visualization.py`: Handles the plotting of 2D and 3D patterns/shapes using Matplotlib. Provides functions like `plot_2d_pattern` and `plot_3d_shape`.
+    * `animations/animations.py`: Manages the creation and rendering of animations (e.g., `animate_pattern_evolution`, `animate_3d_rotation`).
+    * `custom/compositions.py`: Provides tools for creating complex compositions by combining or layering basic patterns and shapes.
+    * `utils/`:
+        * `exporters.py`: Functions for exporting visualizations to image files (PNG, SVG) and 3D models to OBJ, STL.
+        * `color_schemes.py`: Defines and manages color palettes, gradients, and provides utilities for color mapping.
+    * `education/information.py`: Stores and retrieves textual information (descriptions, history, symbolism) about sacred geometry forms.
+    * `audio/cymatics.py` (Enhancement): Conceptual module for generating sound from geometric properties.
+    * `vr/vr_interface.py` (Enhancement): Conceptual module for VR/AR integration.
+    * `ai/pattern_generator.py` (Enhancement): Conceptual module for AI-assisted pattern generation.
+
+* **`esoteric_sacred_geometry_gui.py` (Main Application Script):**
+    * Implements the main application window and all GUI elements using PyQt5.
+    * Handles user interactions (button clicks, parameter adjustments).
+    * Coordinates calls to the backend modules in the `sacred_geometry` package for generation, visualization, and other operations.
+    * Manages the Matplotlib canvas integration.
+
+* **`esoteric_style.qss` (Stylesheet):**
+    * Defines the visual appearance (dark esoteric theme) of the PyQt5 GUI elements.
+
+* **Supporting Files/Directories:**
+    * `README.md`: Project overview and setup instructions.
+    * `requirements.txt`: Lists all Python package dependencies.
+    * `setup.py`: Script for packaging and distributing the application.
+    * `outputs/`: Default directory for saved images, models, and animations.
+    * `examples/`: Directory for example scripts and notebooks.
+    * `documentation/`: Directory for detailed user and API documentation.
+    * `tests/`: Directory for unit and integration tests.
+
+### 3.4. Rationale for Architectural Choices
+
+* **Python:** Chosen for its extensive scientific and visualization libraries, cross-platform nature, and rapid development capabilities.
+* **PyQt5:** A robust and feature-rich framework for creating professional desktop GUIs.
+* **Matplotlib:** A versatile plotting library that integrates well with PyQt5 and supports both 2D and 3D visualizations, as well as animations.
+* **NumPy:** Indispensable for efficient numerical operations required in geometric calculations.
+* **Modular Design:** This approach enhances maintainability, testability, and makes it easier to extend the application with new features or geometric forms without impacting other parts of the system. Each module has a clear responsibility.
+
+## 4. Data Models & Schemas
+
+Data representation is key for interoperability between modules.
+
+* **Geometric Data (General):**
+    * **Vertices:** `numpy.ndarray` of shape `(N, 2)` for 2D points or `(N, 3)` for 3D points.
+    * **Edges:** `List[Tuple[int, int]]` where each tuple contains 0-indexed vertex indices forming an edge.
+    * **Faces:** `List[Tuple[int, ...]]` where each tuple contains 0-indexed vertex indices forming a face (e.g., 3 for triangles, 4 for quads).
+    * **Circles (2D):** `List[numpy.ndarray]`, where each array contains points defining a circle.
+    * **Lines (2D):** `List[Tuple[Tuple[float, float], Tuple[float, float]]]`.
+    * **Return Type for Generators:** Most geometry generation functions will return a `Dict[str, Any]` containing keys like `'vertices'`, `'faces'`, `'edges'`, `'circles'`, `'lines'`, as appropriate for the generated object. For example, `create_flower_of_life` returns `List[np.ndarray]` (list of circle point arrays), while `create_tetrahedron` returns `Dict{'vertices': ..., 'faces': ..., 'edges': ...}`. Compositions will return a `Dict` merging these lists.
+
+* **Educational Information (`InfoEntry` class in `education/information.py`):**
+    * `name: str`
+    * `description: str`
+    * `history: str`
+    * `symbolism: str`
+    * `cultural_context: str`
+    * `related_patterns: List[str]`
+    * `keywords: List[str]`
+
+* **Color Schemes (`color_schemes.py`):**
+    * Palettes: `List[str]` (hex color codes) or `Dict[str, str]`.
+    * Gradients: `List[Tuple[float, float, float]]` (RGB tuples, 0-1 range).
+
+* **Animation Parameters (`animations.py`):**
+    * Passed as dictionaries to animation functions, e.g., `{'animated_param_name': 'layers', 'param_start_value': 1, 'param_end_value': 3, ...}`.
+
+* **Sound Event Parameters (`audio/cymatics.py`):**
+    * `List[Dict[str, Any]]`, where each dictionary represents a sound event:
+        * `'frequency': float`
+        * `'duration': float` (seconds)
+        * `'amplitude': float` (0-1)
+        * `'waveform': str` (e.g., 'sine', 'square')
+
+* **VR Object/Scene Parameters (`vr/vr_interface.py` - Conceptual):**
+    * `VRObject`: `name: str`, `shape_data: Dict` (geometric model), `position: Tuple`, `rotation: Tuple`, `scale: Tuple`.
+    * `VRScene`: `objects: Dict[str, VRObject]`, `skybox_texture: str`, `lighting_setup: Dict`.
+
+* **AI Pattern Parameters (`ai/pattern_generator.py` - Conceptual):**
+    * `AIPatternParameters`: `base_pattern_type: str`, `num_layers: int`, `base_radius: float`, etc.
+    * `AIGeneratedPattern`: `params: AIPatternParameters`, `geometric_data: Dict`, `fitness: float`.
+
+## 5. Key API Endpoints / Module Interfaces
+
+The primary interface points are the public functions exposed by each module. The GUI will interact with these functions.
+
+* **`sacred_geometry.core.core`:**
+    * `create_flower_of_life(center, radius, layers) -> List[np.ndarray]`
+    * `create_seed_of_life(center, radius) -> List[np.ndarray]`
+    * `create_metatrons_cube(center, radius) -> Dict[str, Any]`
+    * `create_vesica_piscis(center1, center2, radius) -> Dict[str, Any]`
+    * ... (and other 2D primitive generators)
+
+* **`sacred_geometry.shapes.shapes`:**
+    * `create_tetrahedron(center, radius) -> Dict[str, Any]`
+    * `create_cube(center, radius) -> Dict[str, Any]`
+    * `create_merkaba(center, radius, rotation) -> Dict[str, Any]`
+    * ... (and other 3D shape generators)
+
+* **`sacred_geometry.fractals.fractals`:**
+    * `sierpinski_triangle(points, depth) -> List[np.ndarray]`
+    * `koch_snowflake(points, depth) -> np.ndarray`
+    * ... (and other fractal generators)
+
+* **`sacred_geometry.visualization.visualization`:**
+    * `plot_2d_pattern(pattern_data, ax, title, color_scheme, show_points, ...)`
+    * `plot_3d_shape(shape_data, ax, title, color_scheme, alpha, show_edges, ...)`
+
+* **`sacred_geometry.animations.animations`:**
+    * `animate_pattern_evolution(pattern_generator, static_params, animated_param_name, param_start_value, param_end_value, plot_function, frames, ...)`
+    * `animate_3d_rotation(shape_generator, static_params, plot_function, frames, ...)`
+
+* **`sacred_geometry.custom.compositions`:**
+    * `create_layered_flower_of_life(center, radii, layers_per_radius, ...) -> Composition`
+    * `create_mandala_from_polygons(center, num_segments, segment_elements, ...) -> Composition`
+    * `create_platonic_solid_constellation(...) -> Composition`
+
+* **`sacred_geometry.utils.exporters`:**
+    * `export_figure_to_image(fig, filepath, dpi, transparent) -> bool`
+    * `export_3d_shape_to_obj(shape_data, filepath, object_name) -> bool`
+    * `export_3d_shape_to_stl(shape_data, filepath, solid_name) -> bool`
+
+* **`sacred_geometry.utils.color_schemes`:**
+    * `get_matplotlib_colormap(name, palette_or_gradient, n_colors) -> matplotlib.colors.ListedColormap`
+    * `map_value_to_color(value, min_val, max_val, colormap, ...) -> Tuple[float, float, float]`
+    * `get_available_palettes() -> List[str]`
+    * `get_palette_by_name(name) -> Optional[Union[Dict[str, str], List[str]]]`
+
+* **`sacred_geometry.education.information`:**
+    * `get_information(pattern_name: str) -> Optional[InfoEntry]`
+    * `get_all_pattern_names() -> List[str]`
+    * `search_information_by_keyword(keyword: str) -> List[InfoEntry]`
+
+* **`sacred_geometry.audio.cymatics` (Conceptual):**
+    * `map_geometry_to_audio_params(geometric_properties, ...) -> List[Dict[str, Any]]`
+    * `play_sound_events(sound_events, ...)`
+    * `export_sound_events_to_wav(sound_events, filepath, ...)`
+
+## 6. User Flows & UX Considerations
+
+### 6.1. Primary User Flow
+
+1.  **Launch Application:** User starts the `esoteric_sacred_geometry_gui.py` script.
+2.  **Category Selection:** User selects a main category (e.g., "2D Patterns", "3D Shapes", "Fractals") using the main tab widget.
+3.  **Pattern/Shape Selection:** Within the selected category tab, the user chooses a specific item (e.g., "Flower of Life", "Merkaba") from a dropdown or list.
+4.  **Parameter Adjustment:** The GUI dynamically displays relevant controls (sliders for radius/depth, spin boxes for counts, color pickers, checkboxes for options) for the selected item. User adjusts these parameters.
+5.  **Generation:** User clicks a "Generate" button.
+6.  **Visualization:** The application calls the appropriate backend generation function and then the visualization function. The result is rendered on the central Matplotlib canvas.
+7.  **Interaction (3D):** For 3D shapes, user can use the Matplotlib navigation toolbar to rotate, pan, and zoom the view. Auto-rotation option available.
+8.  **Educational Content Access:** User can access a dedicated panel or window to view information about the currently selected/generated pattern, sourced from the `education/information.py` module.
+9.  **Export/Save:**
+    * User can save the current 2D/3D visualization as a PNG or SVG image.
+    * User can export 3D shapes as OBJ or STL files.
+    * User can save animations (e.g., as GIF).
+10. **Iteration:** User can modify parameters and regenerate, or select a new pattern/shape.
+
+### 6.2. UX Considerations
+
+* **Theme & Aesthetics:** A consistent dark esoteric theme (deep indigo, gold accents, silver-grey text) as defined in `esoteric_style.qss` is paramount for the desired user experience. Font choices should be legible and fit the theme.
+* **Responsiveness:** The GUI must remain responsive during generation and rendering. For potentially long operations (complex animations, AI generation), progress indicators or status messages should be used.
+* **Intuitive Controls:** Parameter controls should be clearly labeled and behave predictably. Sliders for continuous adjustments, spin boxes for precise values.
+* **Feedback:** The status bar will provide ongoing feedback about application state, successful operations, or errors. Visual changes on the canvas provide direct feedback for generation.
+* **Discoverability:** Features like educational content, export options, and advanced modules should be easily discoverable within the UI.
+* **Error States:** User-friendly error messages (via `QMessageBox`) should guide the user if something goes wrong (e.g., invalid input, file error).
+
+## 7. Error Handling Strategies
+
+* **GUI Input Validation:**
+    * Range checks for numerical inputs (sliders, spin boxes).
+    * Validation of color inputs.
+    * Disabling/enabling controls based on context to prevent invalid operations.
+* **Backend Module Robustness:**
+    * Functions within modules (`core`, `shapes`, etc.) will use `try-except` blocks to handle potential runtime errors (e.g., mathematical errors like division by zero, unexpected data).
+    * Return error codes or raise specific custom exceptions that the GUI layer can catch and interpret.
+* **File Operations:**
+    * Handle `FileNotFoundError`, `PermissionError`, and other `IOError` exceptions during saving, exporting, or loading (e.g., QSS file).
+    * Provide informative messages to the user.
+* **Optional Dependencies:**
+    * Modules relying on optional libraries (e.g., `sounddevice`, `pydub` for `cymatics.py`; future VR/AI libs) will check for their availability at import time.
+    * If a library is missing, the corresponding feature will be gracefully disabled, and a warning will be logged to the console and potentially shown in the GUI status bar or a dedicated "Features" status dialog.
+* **User Feedback for Errors:**
+    * `QMessageBox` will be used to display critical errors or warnings to the user.
+    * The status bar will show less critical error messages or operational failures.
+    * Detailed exceptions and tracebacks will be printed to the console for debugging purposes.
+* **Default Values:** All configurable parameters will have sensible default values to ensure the application can generate a default pattern upon selection without immediate user input, and to prevent errors from uninitialized parameters.
+
+## 8. Testing Plan
+
+A dedicated `tests/` directory will house all test scripts.
+
+### 8.1. Unit Tests
+
+* **Scope:** Test individual functions and classes within each module in isolation.
+* **Modules to Test:** `core.py`, `shapes.py`, `fractals.py`, `utils/color_schemes.py`, `utils/exporters.py`, `education/information.py`, `animations.py`, `custom/compositions.py`, `audio/cymatics.py`.
+* **Methodology:**
+    * Use `unittest` or `pytest` framework.
+    * For each function, test:
+        * Valid inputs and expected outputs (e.g., correct vertex counts, face structures, color values).
+        * Edge cases (e.g., zero radius, min/max layer counts).
+        * Invalid inputs and expected error handling (e.g., raising `ValueError`).
+    * Example: `test_core.py` will contain `TestCreateCircle`, `TestCreateFlowerOfLife`, etc.
+
+### 8.2. Integration Tests
+
+* **Scope:** Test the interaction and data flow between different modules.
+* **Scenarios:**
+    * Generate a 2D pattern (`core`) -> Visualize it (`visualization`) -> Export to PNG/SVG (`exporters`).
+    * Generate a 3D shape (`shapes`) -> Visualize it (`visualization`) -> Export to OBJ/STL (`exporters`).
+    * Generate a pattern (`core`) -> Animate its evolution (`animations`) -> Save animation.
+    * Retrieve educational info (`education`) for a generated pattern.
+    * Apply a color scheme (`color_schemes`) during visualization.
+* **Methodology:** Write test scripts that orchestrate calls across multiple modules and assert the final outcome or intermediate data integrity.
+
+### 8.3. GUI Tests (Primarily Manual, Potentially Automated)
+
+* **Scope:** Test the functionality and usability of the PyQt5 GUI.
+* **Manual Testing:**
+    * Verify all UI elements are present and functional as per `esoteric_sacred_geometry_gui.py`.
+    * Test all user flows described in Section 6.1.
+    * Verify parameter changes correctly update the visualization.
+    * Check application of the `esoteric_style.qss` theme.
+    * Test error message display for invalid inputs or backend errors.
+    * Test save/export dialogs and file outputs.
+* **Automated GUI Testing (Optional/Future):** Consider tools like `pytest-qt` if extensive automated GUI testing is required.
+
+### 8.4. Visual Regression Tests (Optional/Future)
+
+* **Scope:** Ensure visualizations do not change unexpectedly over time.
+* **Methodology:** Generate baseline images/animations for key patterns with fixed parameters. Subsequent test runs generate new visuals and compare them (pixel-wise or using image similarity metrics) against the baselines.
+
+### 8.5. Performance Testing
+
+* **Scope:** Identify performance bottlenecks, especially for complex geometry generation, 3D rendering, and animations.
+* **Methodology:** Use Python's `cProfile` or `timeit` to benchmark critical functions. Test with high parameter values (e.g., many layers, high fractal depth).
+
+### 8.6. Focus Areas for Testing
+
+* **Geometric Accuracy:** Ensure all mathematical formulas and algorithms for pattern generation are correctly implemented.
+* **Data Integrity:** Verify the structure and content of data passed between modules (vertices, faces, color data, etc.).
+* **File I/O:** Robustness of all import (QSS) and export (images, 3D models, audio, animations) operations.
+* **Error Handling:** Confirm that all anticipated errors are caught and handled gracefully.
+* **GUI Responsiveness & Theme:** Ensure the GUI remains usable and adheres to the visual specifications.
+* **Cross-Module Compatibility:** Verify that outputs from one module are compatible as inputs to another (e.g., shape data from `shapes.py` used by `visualization.py` and `exporters.py`).
+

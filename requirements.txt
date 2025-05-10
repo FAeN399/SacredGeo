@@ -1,16 +1,41 @@
+# Core dependencies
 numpy>=1.20.0
 matplotlib>=3.4.0
 sympy>=1.8.0
 scipy>=1.7.0
-PyOpenGL>=3.1.0
 PyQt5>=5.15.0
-# For 3D visualization
-plotly>=5.0.0
-# For web interface (optional)
-flask>=2.0.0
-# For more advanced 3D rendering
+
+# 3D visualization
+PyOpenGL>=3.1.0
+trimesh>=3.9.0
+pyglet>=1.5.0
 pyvista>=0.32.0
-# For animations
+plotly>=5.0.0
+
+# File exports and image processing
+svgwrite>=1.4.0
+pillow>=8.0.0
+colorsys  # Part of standard library
+
+# Animation
+imageio>=2.9.0
+matplotlib-animations>=0.1.0
 manim>=0.15.0
-# For sound integration (optional)
+
+# Web interface (optional)
+flask>=2.0.0
+dash>=2.0.0
+
+# Sound integration (optional)
 pydub>=0.25.0
+
+# Documentation
+sphinx>=3.2.0
+sphinx-rtd-theme>=0.5.0
+nbsphinx>=0.8.0
+
+# Testing and development
+pytest>=6.0.0
+pytest-cov>=2.10.0
+flake8>=3.8.0
+black>=20.8b1

@@ -1,0 +1,312 @@
+"""
+Sacred Geometry Color Schemes Module
+
+This module defines various color schemes, palettes, and utility functions
+for color manipulation, including gradient generation and color mapping.
+These can be used for visualizing sacred geometry patterns and shapes.
+
+Color palettes are generally lists of hex color strings.
+Gradients can be represented as a list of colors to interpolate between.
+"""
+import numpy as np
+from typing import List, Tuple, Dict, Union, Callable, Optional
+import matplotlib.colors
+
+# Helper function to convert hex to RGB and vice-versa if needed
+def hex_to_rgb(hex_color: str) -> Tuple[float, float, float]:
+    """Converts a hex color string to an RGB tuple (values 0-1)."""
+    hex_color = hex_color.lstrip('#')
+    return tuple(int(hex_color[i:i+2], 16) / 255.0 for i in (0, 2, 4))
+
+def rgb_to_hex(rgb_color: Tuple[float, float, float]) -> str:
+    """Converts an RGB tuple (values 0-1) to a hex color string."""
+    return "#{:02x}{:02x}{:02x}".format(
+        int(rgb_color[0]*255), int(rgb_color[1]*255), int(rgb_color[2]*255)
+    )
+
+# --- Predefined Palettes ---
+
+PALETTE_ESOTERIC_GOLD = {
+    "deep_indigo": "#1a1a2e",
+    "dark_purple": "#252538",
+    "medium_purple": "#3c3c4f",
+    "light_silver_grey": "#c0c0d0",
+    "lavender_white": "#e6e6fa",
+    "gold_accent": "#daa520",      # Primary Gold
+    "bright_gold": "#ffd700",     # Brighter Gold
+    "dark_gold": "#b8860b",       # Darker Gold
+    "off_white": "#e0e0e0",
+    "metallic_grey": "#4a4a5a"
+}
+
+PALETTE_ELEMENTAL_FIRE = ["#FF2400", "#FF4500", "#FF6347", "#FF7F50", "#FF8C00", "#FFA500"] # Various shades of red/orange
+PALETTE_ELEMENTAL_WATER = ["#00FFFF", "#40E0D0", "#00BFFF", "#1E90FF", "#0000CD", "#000080"] # Cyan, turquoise, blues
+PALETTE_ELEMENTAL_EARTH = ["#A0522D", "#8B4513", "#D2691E", "#CD853F", "#F4A460", "#228B22"] # Browns, tans, greens
+PALETTE_ELEMENTAL_AIR = ["#ADD8E6", "#B0E0E6", "#AFEEEE", "#F0FFFF", "#E0FFFF", "#87CEEB"] # Light blues, pale cyans, white
+
+PALETTE_COSMIC_DUSK = ["#0B0C10", "#1F2833", "#C5C6C7", "#66FCF1", "#45A29E"] # Dark, teal, silver
+PALETTE_RAINBOW_VIBRANT = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#8B00FF"]
+PALETTE_PASTEL_DREAM = ["#FFB6C1", "#FFDAC1", "#FFFFE0", "#E0FFD1", "#C1E1FF", "#D1C1FF"]
+
+# --- Gradient Functions ---
+
+def linear_gradient(
+    start_hex: str,
+    finish_hex: str,
+    n: int = 10
+) -> List[Tuple[float, float, float]]:
+    """
+    Generates a list of n RGB colors forming a linear gradient
+    between two hex colors. RGB values are 0-1.
+
+    Args:
+        start_hex (str): Starting hex color.
+        finish_hex (str): Ending hex color.
+        n (int): Number of colors in the gradient.
+
+    Returns:
+        List[Tuple[float, float, float]]: List of RGB tuples.
+    """
+    s = hex_to_rgb(start_hex)
+    f = hex_to_rgb(finish_hex)
+    gradient_rgb = []
+    for i in range(n):
+        gradient_rgb.append(
+            (s[0] * (n - 1 - i) / (n - 1) + f[0] * i / (n - 1),
+             s[1] * (n - 1 - i) / (n - 1) + f[1] * i / (n - 1),
+             s[2] * (n - 1 - i) / (n - 1) + f[2] * i / (n - 1))
+        )
+    return gradient_rgb
+
+def create_gradient_from_palette(
+    palette: List[str],
+    num_steps_between: int = 5
+) -> List[Tuple[float, float, float]]:
+    """
+    Creates a smoother gradient by interpolating between colors in a given palette.
+
+    Args:
+        palette (List[str]): A list of hex color strings.
+        num_steps_between (int): Number of interpolation steps between each
+                                 pair of colors in the palette.
+
+    Returns:
+        List[Tuple[float, float, float]]: A list of RGB tuples representing the full gradient.
+    """
+    if not palette or len(palette) < 2:
+        raise ValueError("Palette must contain at least two colors to create a gradient.")
+
+    full_gradient_rgb: List[Tuple[float, float, float]] = []
+    for i in range(len(palette) - 1):
+        start_c = palette[i]
+        end_c = palette[i+1]
+        # Generate n-1 steps because the end color of one segment is the start of the next
+        segment_gradient = linear_gradient(start_c, end_c, num_steps_between + 1)
+        full_gradient_rgb.extend(segment_gradient[:-1]) # Exclude last to avoid duplicate with next start
+
+    full_gradient_rgb.append(hex_to_rgb(palette[-1])) # Add the very last color
+    return full_gradient_rgb
+
+# --- Matplotlib Colormap Integration ---
+
+def get_matplotlib_colormap(
+    name: str,
+    palette_or_gradient: Optional[Union[List[str], List[Tuple[float, float, float]]]] = None,
+    n_colors: int = 256
+) -> matplotlib.colors.ListedColormap:
+    """
+    Creates a matplotlib ListedColormap from a predefined palette name,
+    a custom list of hex colors, or a list of RGB tuples.
+
+    Args:
+        name (str): The name for the colormap (e.g., "esoteric_gold_gradient").
+        palette_or_gradient (Optional[Union[List[str], List[Tuple[float, float, float]]]]):
+            - If List[str]: A list of hex color strings to form the colormap.
+                            A gradient will be created if more than a few colors.
+            - If List[Tuple[float,float,float]]: A list of RGB tuples (0-1).
+            - If None: Tries to find a predefined palette by `name` (e.g., "PALETTE_ELEMENTAL_FIRE").
+        n_colors (int): The number of colors in the resulting colormap,
+                        especially if interpolating from a small palette.
+
+    Returns:
+        matplotlib.colors.ListedColormap: The generated colormap.
+    """
+    colors_rgb: List[Tuple[float, float, float]]
+
+    if palette_or_gradient is None:
+        # Try to get a predefined palette by name
+        predefined_name = f"PALETTE_{name.upper().replace(' ', '_')}"
+        if hasattr(__import__(__name__), predefined_name):
+            palette_hex = getattr(__import__(__name__), predefined_name)
+            if isinstance(palette_hex, dict): # Like PALETTE_ESOTERIC_GOLD
+                 palette_hex = list(palette_hex.values()) # Convert dict values to list
+            colors_rgb = create_gradient_from_palette(palette_hex, num_steps_between = n_colors // max(1, (len(palette_hex)-1)))
+        else:
+            raise ValueError(f"Predefined palette '{name}' not found and no custom palette provided.")
+
+    elif isinstance(palette_or_gradient, list):
+        if not palette_or_gradient:
+            raise ValueError("palette_or_gradient cannot be empty.")
+
+        if isinstance(palette_or_gradient[0], str): # List of hex strings
+            # Create a smoother gradient if few colors, otherwise use directly
+            if len(palette_or_gradient) < n_colors // 10 and len(palette_or_gradient) > 1:
+                 colors_rgb = create_gradient_from_palette(palette_or_gradient, num_steps_between=n_colors // max(1, len(palette_or_gradient)-1))
+            else:
+                colors_rgb = [hex_to_rgb(h) for h in palette_or_gradient]
+        elif isinstance(palette_or_gradient[0], tuple): # List of RGB tuples
+            colors_rgb = palette_or_gradient
+        else:
+            raise TypeError("palette_or_gradient must be a list of hex strings or RGB tuples.")
+    else:
+        raise TypeError("palette_or_gradient must be a list or None.")
+
+    # Ensure the final list of colors_rgb is sampled/interpolated to n_colors if necessary
+    # This step is implicitly handled if create_gradient_from_palette was used correctly,
+    # or if the provided list of RGBs is already of the desired length.
+    # For direct RGB list or small hex list not passed through create_gradient_from_palette,
+    # we might need an explicit interpolation to n_colors.
+    if len(colors_rgb) < 2: # Colormap needs at least 2 colors
+        # Duplicate color if only one, or handle error
+        if len(colors_rgb) == 1:
+            colors_rgb = [colors_rgb[0], colors_rgb[0]]
+        else:
+            raise ValueError("Cannot create colormap from empty or single color list without proper gradient generation.")
+
+    # If the number of colors_rgb is significantly different from n_colors,
+    # and it wasn't generated by create_gradient_from_palette to match n_colors,
+    # we might want to resample it. Matplotlib's ListedColormap can take a list of any size,
+    # but for smooth appearance, it's good if it's around n_colors.
+    # For simplicity, we'll use the colors_rgb as is, assuming it's either
+    # already a fine gradient or a discrete palette.
+    # If you need exactly n_colors, you'd interpolate colors_rgb to that length.
+
+    return matplotlib.colors.ListedColormap(colors_rgb, name=name, N=len(colors_rgb))
+
+
+# --- Color Mapping Functions ---
+def map_value_to_color(
+    value: float,
+    min_val: float,
+    max_val: float,
+    colormap: Union[str, matplotlib.colors.Colormap, List[str], List[Tuple[float,float,float]]],
+    default_color_hex: str = "#FFFFFF"
+) -> Tuple[float, float, float]:
+    """
+    Maps a scalar value to an RGB color based on a given colormap or palette.
+
+    Args:
+        value (float): The scalar value to map.
+        min_val (float): The minimum of the value range.
+        max_val (float): The maximum of the value range.
+        colormap (Union[str, matplotlib.colors.Colormap, List[str], List[Tuple[float,float,float]]]):
+            - If str: Name of a matplotlib built-in colormap (e.g., "viridis", "magma")
+                      or a predefined palette name (e.g., "ELEMENTAL_FIRE").
+            - If Colormap: A matplotlib Colormap object.
+            - If List[str]: A list of hex colors to create a ListedColormap from.
+            - If List[Tuple[float,float,float]]: A list of RGB colors.
+        default_color_hex (str): Default hex color if mapping fails.
+
+    Returns:
+        Tuple[float, float, float]: RGB color tuple (0-1).
+    """
+    if min_val >= max_val:
+        norm_value = 0.5 # Default to middle if range is invalid
+    else:
+        norm_value = (value - min_val) / (max_val - min_val)
+    norm_value = np.clip(norm_value, 0.0, 1.0) # Ensure value is within [0,1]
+
+    cmap_obj: matplotlib.colors.Colormap
+
+    if isinstance(colormap, matplotlib.colors.Colormap):
+        cmap_obj = colormap
+    elif isinstance(colormap, str):
+        try:
+            # Try matplotlib built-in first
+            cmap_obj = plt.get_cmap(colormap)
+        except ValueError:
+            # Try our custom colormaps/palettes
+            try:
+                cmap_obj = get_matplotlib_colormap(colormap) # Uses predefined palettes
+            except ValueError:
+                print(f"Warning: Colormap or palette '{colormap}' not found. Using default color.")
+                return hex_to_rgb(default_color_hex)
+    elif isinstance(colormap, list):
+        try:
+            cmap_obj = get_matplotlib_colormap("custom_list_cmap", palette_or_gradient=colormap)
+        except (TypeError, ValueError) as e:
+            print(f"Warning: Could not create colormap from list: {e}. Using default color.")
+            return hex_to_rgb(default_color_hex)
+    else:
+        print(f"Warning: Invalid colormap type: {type(colormap)}. Using default color.")
+        return hex_to_rgb(default_color_hex)
+
+    # Matplotlib colormap objects are callable with a value (or array of values) from 0-1
+    # They return RGBA by default, so we take the RGB part.
+    return cmap_obj(norm_value)[:3]
+
+
+# --- Collection of all schemes for easy access ---
+ALL_PALETTES: Dict[str, Union[Dict[str, str], List[str]]] = {
+    "Esoteric Gold": PALETTE_ESOTERIC_GOLD,
+    "Elemental Fire": PALETTE_ELEMENTAL_FIRE,
+    "Elemental Water": PALETTE_ELEMENTAL_WATER,
+    "Elemental Earth": PALETTE_ELEMENTAL_EARTH,
+    "Elemental Air": PALETTE_ELEMENTAL_AIR,
+    "Cosmic Dusk": PALETTE_COSMIC_DUSK,
+    "Rainbow Vibrant": PALETTE_RAINBOW_VIBRANT,
+    "Pastel Dream": PALETTE_PASTEL_DREAM,
+}
+
+def get_available_palettes() -> List[str]:
+    """Returns a list of names of the predefined palettes."""
+    return list(ALL_PALETTES.keys())
+
+def get_palette_by_name(name: str) -> Optional[Union[Dict[str, str], List[str]]]:
+    """Retrieves a predefined palette by its name."""
+    return ALL_PALETTES.get(name)
+
+
+if __name__ == '__main__':
+    print("Testing Color Schemes Utilities...")
+
+    # Test hex_to_rgb and rgb_to_hex
+    print(f"Hex #FF0000 to RGB: {hex_to_rgb('#FF0000')}")
+    print(f"RGB (0.0, 1.0, 0.0) to Hex: {rgb_to_hex((0.0, 1.0, 0.0))}")
+
+    # Test linear_gradient
+    grad1 = linear_gradient("#FF0000", "#0000FF", 5)
+    print(f"\nGradient Red to Blue (5 steps): {grad1}")
+    print(f"  In Hex: {[rgb_to_hex(c) for c in grad1]}")
+
+    # Test create_gradient_from_palette
+    fire_grad = create_gradient_from_palette(PALETTE_ELEMENTAL_FIRE, num_steps_between=3)
+    print(f"\nFire Palette Gradient ({len(fire_grad)} colors): First 5 hex: {[rgb_to_hex(c) for c in fire_grad[:5]]}...")
+
+    # Test get_matplotlib_colormap
+    try:
+        cmap_fire = get_matplotlib_colormap("Elemental Fire")
+        print(f"\nMatplotlib colormap from 'Elemental Fire' palette: {cmap_fire.name}, {cmap_fire.N} colors")
+        cmap_custom = get_matplotlib_colormap("custom_pastel", PALETTE_PASTEL_DREAM, n_colors=128)
+        print(f"Matplotlib colormap from custom pastel list: {cmap_custom.name}, {cmap_custom.N} colors")
+    except Exception as e:
+        print(f"Error creating matplotlib colormap: {e}")
+
+
+    # Test map_value_to_color
+    print("\nTesting map_value_to_color:")
+    color1 = map_value_to_color(0.5, 0, 1, "viridis") # Built-in cmap
+    print(f"  Value 0.5 with 'viridis': {color1} (Hex: {rgb_to_hex(color1)})")
+
+    color2 = map_value_to_color(0.2, 0, 1, PALETTE_COSMIC_DUSK) # Custom list
+    print(f"  Value 0.2 with Cosmic Dusk palette: {color2} (Hex: {rgb_to_hex(color2)})")
+
+    color3 = map_value_to_color(0.8, 0, 1, "Elemental Water") # Predefined palette name
+    print(f"  Value 0.8 with 'Elemental Water' palette: {color3} (Hex: {rgb_to_hex(color3)})")
+
+    # Test available palettes
+    print(f"\nAvailable predefined palettes: {get_available_palettes()}")
+    retrieved_palette = get_palette_by_name("Cosmic Dusk")
+    print(f"Retrieved 'Cosmic Dusk': {retrieved_palette is not None}")
+
+    print("\nColor schemes tests finished.")

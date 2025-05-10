@@ -1,0 +1,21 @@
+include LICENSE
+include README.md
+include requirements.txt
+include CHANGELOG.md
+include CONTRIBUTING.md
+
+recursive-include docs *
+recursive-include examples *.py
+recursive-include sacred_geometry/data *
+recursive-include sacred_geometry/templates *
+recursive-include sacred_geometry/resources *
+recursive-include sacred_geometry/gui/icons *
+recursive-include sacred_geometry/gui/themes *
+
+recursive-exclude * __pycache__
+recursive-exclude * *.py[cod]
+recursive-exclude * *.so
+recursive-exclude * .DS_Store
+recursive-exclude tests *
+recursive-exclude docs/_build *
+recursive-exclude .github *

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sacred Geometry GUI - Dark Theme</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a2e; /* Deep dark blue/purple */
+            color: #e0e0e0; /* Light grey for text */
+        }
+
+        /* Sacred Geometry Background SVG - Simplified Flower of Life Seed */
+        .sacred-geometry-bg {
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='sgPattern' patternUnits='userSpaceOnUse' width='100' height='100' x='0' y='0'%3E%3Ccircle cx='50' cy='50' r='18' stroke='%233A3A5E' stroke-width='1' fill='none'/%3E%3Ccircle cx='50' cy='20' r='18' stroke='%233A3A5E' stroke-width='1' fill='none'/%3E%3Ccircle cx='50' cy='80' r='18' stroke='%233A3A5E' stroke-width='1' fill='none'/%3E%3Ccircle cx='25' cy='35' r='18' stroke='%233A3A5E' stroke-width='1' fill='none'/%3E%3Ccircle cx='75' cy='35' r='18' stroke='%233A3A5E' stroke-width='1' fill='none'/%3E%3Ccircle cx='25' cy='65' r='18' stroke='%233A3A5E' stroke-width='1' fill='none'/%3E%3Ccircle cx='75' cy='65' r='18' stroke='%233A3A5E' stroke-width='1' fill='none'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23sgPattern)' opacity='0.3'/%3E%3C/svg%3E");
+            background-attachment: fixed; /* Keeps pattern fixed during scroll */
+        }
+
+        .glassmorphism {
+            background: rgba(26, 26, 46, 0.6); /* Darker, less transparent for better readability */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); /* For Safari */
+            border: 1px solid rgba(58, 58, 94, 0.5); /* Subtle border */
+        }
+
+        .glowing-effect {
+            transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        .glowing-effect:hover {
+            box-shadow: 0 0 15px 5px rgba(128, 90, 213, 0.6), 0 0 5px 2px rgba(128, 90, 213, 0.4); /* Amethyst glow */
+            transform: translateY(-2px);
+        }
+        .icon-placeholder {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #805AD5; /* Amethyst */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #fff;
+        }
+        .dynamic-color-text { /* Example for dynamic color based on selection */
+            color: #FFD700; /* Gold - could change with JS */
+        }
+        .tab-active {
+            border-bottom-color: #FFD700; /* Gold accent */
+            color: #FFD700;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <header class="p-4 shadow-lg glassmorphism sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-bold dynamic-color-text">Sacred Geometry GUI</h1>
+            <nav class="flex space-x-4">
+                <a href="#" class="hover:text-purple-400 transition-colors duration-300 p-2 rounded-md glowing-effect flex items-center space-x-2">
+                    <div class="icon-placeholder">G</div> <span>Gallery</span>
+                </a>
+                <a href="#" class="hover:text-purple-400 transition-colors duration-300 p-2 rounded-md glowing-effect flex items-center space-x-2">
+                     <div class="icon-placeholder">E</div> <span>Editor</span>
+                </a>
+                <a href="#" class="hover:text-purple-400 transition-colors duration-300 p-2 rounded-md glowing-effect flex items-center space-x-2">
+                     <div class="icon-placeholder">S</div> <span>Settings</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto p-4 md:p-8 flex flex-col lg:flex-row gap-8">
+        <aside class="w-full lg:w-1/4 p-6 rounded-lg shadow-xl glassmorphism sacred-geometry-bg">
+            <h2 class="text-xl font-semibold mb-6 border-b-2 border-purple-500 pb-2">Controls & Patterns</h2>
+            
+            <div class="mb-6">
+                <ul class="flex border-b border-gray-700">
+                    <li class="-mb-px mr-1">
+                        <a class="bg-transparent inline-block py-2 px-4 text-gray-400 hover:text-purple-300 font-semibold tab-active" href="#">Flower of Life</a>
+                    </li>
+                    <li class="mr-1">
+                        <a class="bg-transparent inline-block py-2 px-4 text-gray-400 hover:text-purple-300 font-semibold" href="#">Metatron's Cube</a>
+                    </li>
+                    <li class="mr-1">
+                        <a class="bg-transparent inline-block py-2 px-4 text-gray-400 hover:text-purple-300 font-semibold" href="#">Sri Yantra</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <label for="complexity" class="block text-sm font-medium text-gray-300 mb-1">Complexity</label>
+                    <input type="range" id="complexity" name="complexity" min="1" max="10" value="5" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-purple-500">
+                </div>
+                <div>
+                    <label for="color-palette" class="block text-sm font-medium text-gray-300 mb-1">Color Palette</label>
+                    <select id="color-palette" name="color-palette" class="w-full p-2 rounded-md bg-gray-700 border border-gray-600 focus:ring-purple-500 focus:border-purple-500">
+                        <option>Nebula (Default)</option>
+                        <option>Golden Sun</option>
+                        <option>Crystal Blue</option>
+                    </select>
+                </div>
+                <button class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md glowing-effect transition-all duration-300 transform hover:scale-105">
+                    Generate Geometry
+                </button>
+            </div>
+
+            <div class="mt-8 p-4 border border-dashed border-gray-600 rounded-lg">
+                <h3 class="text-lg font-semibold mb-2 dynamic-color-text">Flower of Life</h3>
+                <p class="text-sm text-gray-400">
+                    The Flower of Life is a geometrical figure composed of multiple evenly spaced, overlapping circles arranged to form a flower-like pattern with six-fold symmetry like a hexagon...
+                </p>
+            </div>
+        </aside>
+
+        <section class="w-full lg:w-3/4 p-6 rounded-lg shadow-xl glassmorphism sacred-geometry-bg flex items-center justify-center">
+            <div class="text-center">
+                <h3 class="text-2xl font-semibold mb-4">3D Visualization Area</h3>
+                <div class="w-full h-96 bg-black bg-opacity-30 rounded-lg border-2 border-dashed border-purple-500 flex items-center justify-center">
+                    <p class="text-gray-500">Imagine a stunning 3D sacred geometry here...</p>
+                </div>
+                <p class="text-xs mt-2 text-purple-400 italic">Subtle particle effects shimmering around the geometry...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="p-4 text-center text-sm text-gray-500 glassmorphism">
+        © <span id="currentYear"></span> Sacred Geometry GUI. All rights reserved.
+        <script>document.getElementById('currentYear').textContent = new Date().getFullYear();</script>
+    </footer>
+
+</body>
+</html>

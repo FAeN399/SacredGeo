@@ -1,0 +1,288 @@
+"""
+Sacred Geometry Custom Compositions Module
+
+This module provides functions to create complex and combined sacred geometry
+patterns by layering, blending, and arranging various geometric forms.
+It allows for the creation of unique artistic compositions.
+"""
+import numpy as np
+from typing import List, Dict, Any, Tuple, Optional
+
+# Import functions from other modules as needed
+# Example:
+# from ..core.core import create_flower_of_life, create_circle, create_regular_polygon
+# from ..shapes.shapes import create_merkaba
+# from ..fractals.fractals import sierpinski_triangle
+
+# It's good practice to define a common structure for composition results
+# This could be a dictionary holding lists of different geometric elements
+# (e.g., circles, lines, polygons, 3d_shapes)
+Composition = Dict[str, List[Any]]
+
+def create_layered_flower_of_life(
+    center: Tuple[float, float] = (0, 0),
+    radii: List[float] = [1.0, 0.5, 0.25],
+    layers_per_radius: List[int] = [2, 1, 1],
+    offsets: Optional[List[Tuple[float, float]]] = None,
+    rotations: Optional[List[float]] = None
+) -> Composition:
+    """
+    Creates a composition of multiple Flower of Life patterns layered on top
+    of each other, each with potentially different radii, number of layers,
+    offsets, and rotations.
+
+    Args:
+        center (Tuple[float, float]): The global center for the composition.
+        radii (List[float]): A list of radii for each Flower of Life layer.
+        layers_per_radius (List[int]): A list of how many 'growth' layers
+                                       each Flower of Life should have.
+        offsets (Optional[List[Tuple[float, float]]]): Optional list of (dx, dy)
+                                                      offsets for each FoL layer
+                                                      relative to the global center.
+        rotations (Optional[List[float]]): Optional list of rotation angles (radians)
+                                           for each FoL layer (affects orientation
+                                           if the underlying FoL generator supports it,
+                                           otherwise this might be conceptual).
+
+    Returns:
+        Composition: A dictionary containing a list of all circle geometries.
+                     Example: {'circles': [circle_array1, circle_array2, ...]}
+    """
+    from ..core.core import create_flower_of_life # Local import
+
+    all_circles: List[np.ndarray] = []
+    num_fol_layers = len(radii)
+
+    if offsets is None:
+        offsets = [(0, 0)] * num_fol_layers
+    if rotations is None:
+        rotations = [0.0] * num_fol_layers # Placeholder for now
+
+    if not (len(layers_per_radius) == num_fol_layers and \
+            len(offsets) == num_fol_layers and \
+            len(rotations) == num_fol_layers):
+        raise ValueError("Mismatch in lengths of radii, layers_per_radius, offsets, or rotations.")
+
+    for i in range(num_fol_layers):
+        fol_center_x = center[0] + offsets[i][0]
+        fol_center_y = center[1] + offsets[i][1]
+        fol_radius = radii[i]
+        fol_growth_layers = layers_per_radius[i]
+        # fol_rotation = rotations[i] # Not directly used by create_flower_of_life
+
+        # Generate one Flower of Life pattern
+        # Note: create_flower_of_life returns a list of circle arrays
+        current_fol_circles = create_flower_of_life(
+            center=(fol_center_x, fol_center_y),
+            radius=fol_radius,
+            layers=fol_growth_layers
+        )
+        all_circles.extend(current_fol_circles)
+
+    return {'circles': all_circles, 'lines': [], 'polygons': []}
+
+
+def create_mandala_from_polygons(
+    center: Tuple[float, float] = (0, 0),
+    num_segments: int = 12,
+    segment_elements: List[Dict[str, Any]] = None,
+    base_radius: float = 3.0
+) -> Composition:
+    """
+    Creates a mandala by repeating a set of geometric elements (polygons, circles)
+    radially around a center point.
+
+    Args:
+        center (Tuple[float, float]): The center of the mandala.
+        num_segments (int): The number of radial segments (e.g., 6, 8, 12, 16).
+        segment_elements (List[Dict[str, Any]]): A list of dictionaries,
+            each defining an element to be drawn in one segment.
+            Example:
+            [
+                {'type': 'polygon', 'sides': 3, 'radius': 0.5, 'offset_r': 1.0, 'offset_angle': 0, 'rotation': 0},
+                {'type': 'circle', 'radius': 0.2, 'offset_r': 1.5, 'offset_angle': np.pi/12}
+            ]
+            'offset_r' is radial distance from center, 'offset_angle' is angular offset within segment.
+        base_radius (float): A general scaling factor or reference radius for the mandala.
+
+
+    Returns:
+        Composition: A dictionary containing lists of polygons and circles.
+    """
+    from ..core.core import create_regular_polygon, create_circle # Local import
+
+    all_polygons: List[np.ndarray] = []
+    all_circles: List[np.ndarray] = []
+
+    if segment_elements is None:
+        # Default example elements for one segment
+        segment_elements = [
+            {'type': 'polygon', 'sides': 6, 'radius': 0.5 * base_radius/3, 'offset_r': 1.0 * base_radius/3, 'offset_angle': 0, 'rotation': np.pi/6},
+            {'type': 'polygon', 'sides': 3, 'radius': 0.3 * base_radius/3, 'offset_r': 1.8 * base_radius/3, 'offset_angle': np.pi/24, 'rotation': 0},
+            {'type': 'circle', 'radius': 0.1 * base_radius/3, 'offset_r': 2.5 * base_radius/3, 'offset_angle': 0},
+        ]
+
+    segment_angle_step = 2 * np.pi / num_segments
+
+    for i in range(num_segments):
+        current_segment_angle = i * segment_angle_step
+
+        for element_def in segment_elements:
+            el_type = element_def.get('type')
+            el_radius = element_def.get('radius', 0.1)
+            el_offset_r = element_def.get('offset_r', 0.0) # Radial distance from main center
+            el_offset_angle = element_def.get('offset_angle', 0.0) # Angular offset within the segment's arc
+
+            # Calculate the element's own center based on radial symmetry
+            element_center_angle = current_segment_angle + el_offset_angle
+            element_center_x = center[0] + el_offset_r * np.cos(element_center_angle)
+            element_center_y = center[1] + el_offset_r * np.sin(element_center_angle)
+            element_center = (element_center_x, element_center_y)
+
+            if el_type == 'polygon':
+                sides = element_def.get('sides', 3)
+                rotation = element_def.get('rotation', 0.0) + current_segment_angle # Rotate with segment
+                poly = create_regular_polygon(
+                    center=element_center,
+                    radius=el_radius,
+                    sides=sides,
+                    rotation=rotation
+                )
+                all_polygons.append(poly)
+            elif el_type == 'circle':
+                circ = create_circle(
+                    center=element_center,
+                    radius=el_radius
+                )
+                all_circles.append(circ)
+            # Add more element types (lines, custom shapes) here
+
+    return {'polygons': all_polygons, 'circles': all_circles, 'lines': []}
+
+
+def create_platonic_solid_constellation(
+    solid_type: str = 'icosahedron',
+    num_solids: int = 5,
+    arrangement_radius: float = 5.0,
+    solid_radius: float = 1.0,
+    solid_rotation_offset: float = np.pi / 7
+) -> Composition:
+    """
+    Arranges multiple instances of a Platonic solid in a circular constellation.
+    This is a 3D composition.
+
+    Args:
+        solid_type (str): Type of Platonic solid (e.g., 'tetrahedron', 'cube',
+                          'octahedron', 'dodecahedron', 'icosahedron').
+        num_solids (int): Number of solids in the constellation.
+        arrangement_radius (float): Radius of the circle on which solids are placed.
+        solid_radius (float): Radius of each individual solid.
+        solid_rotation_offset (float): An angular offset applied cumulatively to each solid's rotation.
+
+    Returns:
+        Composition: A dictionary containing a list of 3D shapes.
+                     Each shape is a dictionary (vertices, faces, edges).
+                     Example: {'3d_shapes': [shape_dict1, shape_dict2, ...]}
+    """
+    # Dynamically import the required shape creation function
+    try:
+        shapes_module = __import__('sacred_geometry.shapes.shapes', fromlist=[f'create_{solid_type}'])
+        create_solid_func = getattr(shapes_module, f'create_{solid_type}')
+    except (ImportError, AttributeError):
+        raise ValueError(f"Unsupported or unknown solid type: {solid_type}")
+
+    all_3d_shapes: List[Dict[str, Any]] = []
+    angle_step = 2 * np.pi / num_solids
+
+    for i in range(num_solids):
+        constellation_angle = i * angle_step
+
+        # Calculate center for this solid in the constellation (on XY plane for simplicity)
+        solid_center_x = arrangement_radius * np.cos(constellation_angle)
+        solid_center_y = arrangement_radius * np.sin(constellation_angle)
+        solid_center_z = 0.0 # Could be varied for more complex arrangements
+
+        # Generate the solid
+        # Note: Platonic solid functions return {'vertices': ..., 'faces': ..., 'edges': ...}
+        solid_data = create_solid_func(center=(solid_center_x, solid_center_y, solid_center_z), radius=solid_radius)
+
+        # Optional: Apply individual rotation to each solid (more complex)
+        # This would involve rotating solid_data['vertices'] around its own center.
+        # For simplicity, this example doesn't implement per-solid vertex rotation here,
+        # but `solid_rotation_offset` is included as a concept.
+        # If the solid generator itself has a rotation param, it could be used:
+        # if 'rotation' in create_solid_func.__code__.co_varnames:
+        #     solid_data = create_solid_func(..., rotation=i * solid_rotation_offset)
+
+
+        all_3d_shapes.append(solid_data)
+
+    return {'3d_shapes': all_3d_shapes, 'circles': [], 'lines': [], 'polygons': []}
+
+
+def combine_patterns(pattern1_data: Composition, pattern2_data: Composition) -> Composition:
+    """
+    Simple utility to combine the elements of two composition dictionaries.
+
+    Args:
+        pattern1_data (Composition): First composition.
+        pattern2_data (Composition): Second composition.
+
+    Returns:
+        Composition: A new composition containing all elements from both inputs.
+    """
+    combined: Composition = {
+        'circles': pattern1_data.get('circles', []) + pattern2_data.get('circles', []),
+        'lines': pattern1_data.get('lines', []) + pattern2_data.get('lines', []),
+        'polygons': pattern1_data.get('polygons', []) + pattern2_data.get('polygons', []),
+        '3d_shapes': pattern1_data.get('3d_shapes', []) + pattern2_data.get('3d_shapes', []),
+        # Add other element types as your Composition evolves
+    }
+    return combined
+
+
+if __name__ == '__main__':
+    # This section is for testing the functions if you run this file directly.
+    # You'll need to have the other modules (core, shapes) accessible in your Python path.
+    # For example, by running from the parent directory of 'sacred_geometry'.
+
+    print("Testing custom composition functions...")
+
+    # Test 1: Layered Flower of Life
+    try:
+        layered_fol = create_layered_flower_of_life(
+            radii=[2.0, 1.0],
+            layers_per_radius=[2, 1],
+            offsets=[(0,0), (0.5, 0.5)]
+        )
+        print(f"Layered Flower of Life generated {len(layered_fol['circles'])} circles.")
+        # To visualize, you would pass layered_fol to your plot_2d_pattern function
+        # (assuming it can handle a list of circle arrays directly or via the Composition dict)
+    except Exception as e:
+        print(f"Error testing layered Flower of Life: {e}")
+
+    # Test 2: Mandala
+    try:
+        mandala = create_mandala_from_polygons(num_segments=8, base_radius=2.5)
+        print(f"Mandala generated {len(mandala['polygons'])} polygons and {len(mandala['circles'])} circles.")
+        # Visualization would require a plotter that can iterate through 'polygons' and 'circles'
+    except Exception as e:
+        print(f"Error testing mandala: {e}")
+
+    # Test 3: Platonic Solid Constellation (3D)
+    try:
+        constellation = create_platonic_solid_constellation(
+            solid_type='tetrahedron',
+            num_solids=6,
+            arrangement_radius=3.0,
+            solid_radius=0.5
+        )
+        print(f"Platonic solid constellation generated {len(constellation['3d_shapes'])} shapes.")
+        # Visualization would require a 3D plotter that can render each shape in '3d_shapes'
+    except Exception as e:
+        print(f"Error testing Platonic solid constellation: {e}")
+
+    print("\nCustom composition tests finished.")
+    print("To visualize these, integrate with your visualization module.")
+    print("Ensure that the paths in local imports (e.g., from ..core.core) are correct for your project structure when running.")
+
